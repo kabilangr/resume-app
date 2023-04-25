@@ -1,4 +1,5 @@
 .home-main {
     background: var(--black);
     color: var(--textColor);
+    margin: 20px;
 }
