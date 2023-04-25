@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Navigation from '../navigation/Navigation';
 import { Home as HomePage }  from '../utils/Constants';
+import './Home.css';
 
 
 const Home = () => {
