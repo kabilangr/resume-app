@@ -13,7 +13,7 @@
 .nav-container {
     display: flex;
     justify-content: space-between;
-    background-color: var(--black);
+    background-color: var(--backgroundColor);
 }
 
 .logo-image {
