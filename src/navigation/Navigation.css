@@ -25,6 +25,22 @@
     padding: 10px;
     text-decoration: none;
     border-radius: 0.2rem;
+    transition: 0.5s;
+    color: var(--white)
+}
+
+.link:hover {
+    color: var(--backgroundColor);
+    background-color: var(--white);
+}
+
+.show-selection {
+    background-color: var(--secondaryColor);
+    color: var(--backgroundColor)
+}
+
+.hide-selection {
+    color: var(--white)
 }
 
 .static {
@@ -32,6 +48,6 @@
     background: white;
   }
   
-  .static:hover {
+.static:hover {
     opacity:0;
-  }
+}

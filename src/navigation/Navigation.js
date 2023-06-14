@@ -15,15 +15,10 @@ import { COLORS } from "../utils/style"
 const Navigation = (props) => {
 
     const selectedStyle = (pageName) => {
-        if(props.currentPage === pageName) {
-            return {
-                background : COLORS.secondaryColor,
-                color: COLORS.backgroundColor
-            }
-        }
-        return {
-            color: COLORS.white,
-        }
+        return (props.currentPage === pageName)? {
+            background : COLORS.secondaryColor,
+            color: COLORS.backgroundColor,
+            }: null
     }
 
   return (
