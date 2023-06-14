@@ -1,5 +1,17 @@
 .home-main {
-    background: var(--black);
+    background: var(--backgroundColor);
+}
+
+.homePage-container {
     color: var(--textColor);
-    margin: 20px;
+    padding-bottom: 50vh;
+}
+.top-Section {
+    margin-top: 50vh;
+    width: 100%;
+    height: auto;
+}
+.article {
+    text-align: center;
+    font-size: 80px;
 }
