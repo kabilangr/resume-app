@@ -7,11 +7,64 @@
     padding-bottom: 50vh;
 }
 .top-Section {
-    margin-top: 50vh;
-    width: 100%;
-    height: auto;
+    margin-top: 15vh;
 }
 .article {
-    text-align: center;
     font-size: 80px;
+    background: -webkit-linear-gradient(var(--secondaryColor) 2%, var(--primaryColor) 98%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.typed {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 19ch;
+    border-right: .15em solid orange;
+    animation: typing 2.5s steps(30,end), blink-caret .5s step-end infinite alternate;
+}
+
+.top-animation-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: var(--secondaryColor);
+    animation: circle-roll 5s steps(300,end);
+}
+.top-animation-rectangle {
+    height: 100px;
+    width: 20px;
+    background-color: var(--secondaryColor);
+}
+
+@keyframes circle-roll {
+    from {
+        transform: translate(0px,0px);
+    } 
+    to {
+        transform: translate(50vw,0px);
+    }
+}
+    
+@keyframes typing {
+    from { width: 0 }
+}
+
+@keyframes blink-caret {
+    50% { border-color: transparent }
+}
+
+.scrollToTopContainer {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+}
+.scrollToTopButton {
+    background-color: var(--backgroundColor);
+    border: none;
+}
+.scroll-to-top-icon {
+    background-color: var(--backgroundColor);
+    width: 30px;
+    transform: rotate(-45deg);
+    height: auto;
 }
