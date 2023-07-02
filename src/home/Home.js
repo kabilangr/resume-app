@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navigation from '../navigation/Navigation';
 import { Home as HomePage }  from '../utils/Constants';
 import topIcon from "../assets/scroll-to-top.png"
@@ -7,18 +7,17 @@ import './Home.css';
 
 const Home = () => {
     const [showButton, setShowButton] = useState(false)
-    const [showScrollBar,setShowScrollBar] = useState(false)
     useEffect(() => {
-        const handleScrollButtonVisiblity = () => {
+        const handleScrollButtonVisibility = () => {
             window.pageYOffset > 300 ? setShowButton(true) : setShowButton(false);
         };
-        window.addEventListener('scroll', handleScrollButtonVisiblity);
+        window.addEventListener('scroll', handleScrollButtonVisibility);
         return () => {
-            window.removeEventListener('scroll', handleScrollButtonVisiblity);
+            window.removeEventListener('scroll', handleScrollButtonVisibility);
         };
     }, []);
     const handleScrollToTop = () => {
-        window. scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         };
     return (
         <div className='home-main'>
@@ -28,7 +27,9 @@ const Home = () => {
                     <article className='article typed'>Hi, My name is kabilan.</article>
                     <div className='top-animation'>
                         <div className='top-animation-circle'></div>
-                        <div className='top-animation-rectangle'></div>
+                        <div className='top-rectangle rectangle-animation1'></div>
+                        <div className='top-rectangle rectangle-animation2'></div>
+                        <div className='top-rectangle rectangle-animation3'></div>
                     </div>
                 </section>
                 <section className='top-Section'>
