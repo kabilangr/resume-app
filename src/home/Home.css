@@ -103,6 +103,9 @@
 }
 
 @media screen and (max-width: 748px) {
+    .article {
+        padding: 0;
+    }
     .myImage {
         max-height: 124px;
         max-width: 124px;
@@ -122,7 +125,8 @@
         text-align: center;
     }
     .myJobTitle {
-        text-align: center;
+        display: flex;
+        justify-content: center;
     }
     
     .content-description {
