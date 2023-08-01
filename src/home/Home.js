@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import Navigation from '../navigation/Navigation';
 import { Home as HomePage }  from '../utils/Constants';
-import topIcon from "../assets/scroll-to-top.png"
+import topIcon from "../assets/scroll-to-top.svg"
+import kabilanImage from "../assets/kabilan-image.JPG"
+import Typewriter from "typewriter-effect";
 import './Home.css';
 
 
 const Home = () => {
     const [showButton, setShowButton] = useState(false)
+    const [year,setYear] = useState(0)
     useEffect(() => {
         const handleScrollButtonVisibility = () => {
-            window.pageYOffset > 300 ? setShowButton(true) : setShowButton(false);
+            window.pageYOffset > 50 ? setShowButton(true) : setShowButton(false);
         };
         window.addEventListener('scroll', handleScrollButtonVisibility);
         return () => {
@@ -19,28 +22,51 @@ const Home = () => {
     const handleScrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         };
+    function years ()  {
+        let startDate = new Date("11/02/2020")
+        let currentDate = new Date()
+        let noOfYears = (currentDate - startDate)/(1000 * 60 * 60 * 24*365)
+        if(noOfYears >= (Math.floor(noOfYears) + 0.5)){
+            setYear((Math.floor(noOfYears) + 0.5))
+        } else {
+            setYear(Math.floor(noOfYears))
+        } 
+    }
+    useEffect(() => {years ()},[])
     return (
         <div className='home-main'>
             <div className='top-nav'><Navigation currentPage={HomePage}/></div>
             <div className="homePage-container">
-                <section className='top-Section'>
-                    <article className='article typed'>Hi, My name is kabilan.</article>
-                    <div className='top-animation'>
-                        <div className='top-animation-circle'></div>
-                        <div className='top-rectangle rectangle-animation1'></div>
-                        <div className='top-rectangle rectangle-animation2'></div>
-                        <div className='top-rectangle rectangle-animation3'></div>
-                    </div>
-                </section>
-                <section className='top-Section'>
-                    <article className='article'>I am a Full-stack Developer.</article>
-                </section>
+            <div className='background-css'>
                 <section className='top-Section'>
                     <article className='article'>
-                        GoodLuck is made by strong Will 
-                    </article>
+                        <h3 className='helloTitle homeText'>Hello, It's me</h3>
+                        <h1 className='myName homeText'>Kabilan Ragumurthi</h1>
+                        <div className='myJobTitle homeText'><p>I am a </p><Typewriter onInit={(typewriter) => {
+                            typewriter
+                            .typeString("Front-end developer")
+                            .pauseFor(500)
+                            .deleteAll()
+                            .typeString("Full-stack Developer")
+                            .pauseFor(500)
+                            .deleteAll()
+                            .typeString("Mobile Developer")
+                            .pauseFor(500)
+                            .deleteAll()
+                            .typeString("Software Developer")
+                            .start();
+                        }} options={{loop:true}} /></div>
+                        <p className='content-description'>I'am a Full Stack developer with extensive experience for over {year} years.
+                            <br/> Expertise is to create ReactJs, React Native and nodeJs application and more.....
+                        </p>
+                        </article>
                 </section>
+                <div className='image-div'>
+                    <img src={kabilanImage} className='myImage' alt='MyImage'/>
+                </div>
+                </div>
             </div>
+
             {showButton && (
                 <div className='scrollToTopContainer'>          
                     <button className="scrollToTopButton" onClick={handleScrollToTop} >

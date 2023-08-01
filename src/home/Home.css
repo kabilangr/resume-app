@@ -4,135 +4,81 @@
 
 .homePage-container {
     color: var(--textColor);
-    padding-bottom: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .top-Section {
-    margin-top: 15vh;
+    z-index: 5;
 }
 .article {
-    font-size: 80px;
+    font-size: 10px;
+    font-family: Nunito;
     z-index: 1;
+    padding: 0 30px;
     background: -webkit-linear-gradient(var(--secondaryColor) 2%, var(--primaryColor) 98%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-.typed {
-    overflow: hidden;
-    white-space: nowrap;
-    width: 19ch;
-    border-right: .15em solid orange;
-    animation: typing 2.5s steps(30,end), blink-caret .5s step-end infinite alternate;
-}
-.top-animation {
-    margin-top: 10VH;
+.background-css {
+    z-index: 0;
+    margin: 50px 0;
+    background-size: 40px 40px;
+    background-color: black;
+    box-shadow: 0px 0px 40px 20px var(--secondaryBlueColor);
+    padding:50px 20px;
     display: flex;
-    width: 50%;
-    justify-content: space-between;
+    justify-content: space-around;
+    align-items: center;
 }
-.top-animation-circle {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    transform: translate(0px,0px);
-    background-color: var(--secondaryColor);
-    animation: circle-roll 5s linear normal forwards;
+.homeText {
+    margin: 0;
 }
-.top-rectangle {
-    height: 100px;
-    width: 20px;
-    background-color: var(--secondaryColor);
-}
-.rectangle-animation1 {
-    transform: translate(16vw,0);
-    animation: rectangle-fall1 1.5s cubic-bezier(0.68, 0.07, 0.35, 0.98) 4.45s 1 normal forwards;
-    transform-origin: bottom left;
-}
-.rectangle-animation2 {
-    transform: translate(7vw,0);
-    animation: rectangle-fall2 1.5s cubic-bezier(0.15, 0.88, 0.58, 1) 5.2s 1 normal forwards;
-    transform-origin: bottom left;
-}
-.rectangle-animation3 {
-    transform: translate(0,0);
-    animation: rectangle-fall3 1.5s ease-out 5.75s 1 normal forwards;
-    transform-origin: bottom left;
+.helloTitle {
+    font-size: 24px;
 }
 
-@keyframes circle-roll {
-    from {
-        transform: translate(0px,-100px);
-    } 
-    10% {
-        transform: translate(5vw,0px);
-    }
-    20% {
-        transform: translate(10vw,-70px);
-    }
-
-    30% {
-        transform: translate(15vw,0px);
-    }
-
-    35% {
-        transform: translate(17.5vw,-40px);
-    }
-    40% {
-        transform: translate(20vw,0px);
-    }
-    42.5% {
-        transform: translate(21.25vw,-20px);
-    }
-    45% {
-        transform: translate(22.5vw,0px);
-    }
-    47.5% {
-        transform: translate(23.75vw,-10px);
-    }
-    49% {
-        transform: translate(24.5vw,0px);
-    }
-    50% {
-        transform: translate(25vw,-5px);
-    }
-    51% {
-        transform: translate(25.5vw,0px);
-    }
-    52% {
-        transform: translate(26vw,-3px);
-    }
-    53% {
-        transform: translate(26.5vw,0px);
-    }
-    to {
-        transform: translate(29.2vw,0px);
-    }
+.myName {
+    font-size: 44px;
 }
 
-@keyframes rectangle-fall1 {
-    from {
-        transform: translate(16vw,0) rotate(0deg);
-    } 
-    to {
-        transform: translate(16vw,-20px) rotate(70deg);
-    }
+.myJobTitle {
+    font-size: 24px;
+    display: flex;
+    color: var(--primaryColor);
 }
-@keyframes rectangle-fall2 {
-    from {
-        transform: translate(7vw,0) rotate(0deg);
-    } 
-    to {
-        transform: translate(7vw,-20px) rotate(75deg);
-    }
+
+.content-description {
+    font-size: 16px;
+    width: 40vw;
+    min-width: 40vw;
 }
-@keyframes rectangle-fall3 {
-    from {
-        transform: translate(0,0) rotate(0deg);
-    } 
-    to {
-        transform: translate(0,-20px) rotate(90deg);
-    }
+
+.myJobTitle>p {
+    margin: 0 1vw 0 0;
+    color: var(--textColor);
 }
-    
+.image-div {
+    height: 100%;
+    max-height: 324px;
+    max-width: 324px;
+    width: auto;
+}
+.myImage {
+    /* min-width: 324px; */
+    height: 100%;
+    max-height: 324px;
+    max-width: 324px;
+    width: auto;
+    /* max-height: 324px; */
+    border-radius: 100%;
+    margin-right: 30px;
+    object-fit: cover;
+    border: 0.5px var(--secondaryBlueColor) solid;
+    box-shadow: 0px 0px 40px 1px var(--secondaryBlueColor);
+}
+
 @keyframes typing {
     from { width: 0 }
 }
@@ -153,6 +99,36 @@
 .scroll-to-top-icon {
     background-color: var(--backgroundColor);
     width: 30px;
-    transform: rotate(-45deg);
-    height: auto;
+    height: 30px;
+}
+
+@media screen and (max-width: 748px) {
+    .myImage {
+        max-height: 124px;
+        max-width: 124px;
+        margin-right: 0;
+    }
+    .background-css {
+        flex-direction: column-reverse;
+    }
+    .homeText {
+        text-align: center;
+    }
+    .helloTitle {
+        text-align: center;
+    }
+    
+    .myName {
+        text-align: center;
+    }
+    .myJobTitle {
+        text-align: center;
+    }
+    
+    .content-description {
+        text-align: center;
+        margin: 0;
+        width: auto;
+        min-width: auto;
+    }
 }
