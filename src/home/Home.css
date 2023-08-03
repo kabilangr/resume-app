@@ -19,6 +19,7 @@
     padding: 0 30px;
     background: -webkit-linear-gradient(var(--secondaryColor) 2%, var(--primaryColor) 98%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 .background-css {
