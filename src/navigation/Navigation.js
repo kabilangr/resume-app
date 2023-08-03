@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import logoGif from '../assets/KR-black.gif'
 import "./Navigation.css";
-import logoImg from '../assets/KR-static-black.png'
-import crossIcon from "../assets/cross-icon.svg"
+import { ImageUtil, GifUtil } from "../utils/ImageUtil";
 import { Link } from 'react-router-dom'
 import { Home,
     Languages,
@@ -31,8 +29,8 @@ const Navigation = (props) => {
     return (
     <div className='navigation-main'>
         <nav className='nav-container'>
-                <img className='logo-image' src={logoGif} alt=".logo" />
-                <img className="logo-image static" src={logoImg} alt=".logo" />
+                <img className='logo-image' src={GifUtil.logoGif} alt=".logo" />
+                <img className="logo-image static" src={ImageUtil.logoImg} alt=".logo" />
             <ul className='list-container'>
                 <li className='list-data'><Link to={"/home"} style={selectedStyle(Home)} className="link">{Home}</Link></li>
                 <li className='list-data'><Link to={"/languages"} style={selectedStyle(Languages)} className="link">{Languages}</Link></li>
@@ -55,7 +53,7 @@ const Navigation = (props) => {
         { showNavList &&
         <nav className='nav-list'>
                 <a class="hamburger-icon" onClick={showHideNavList}>
-                    <img className='crossIcon' src={crossIcon} />
+                    <img className='crossIcon' src={ImageUtil.crossIcon} />
                 </a>
             <ul>
                 <li ><Link to={"/home"} style={selectedStyle(Home)} className="link">{Home}</Link></li>

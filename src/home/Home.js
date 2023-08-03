@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Navigation from '../navigation/Navigation';
 import { Home as HomePage }  from '../utils/Constants';
-import topIcon from "../assets/scroll-to-top.svg"
-import kabilanImage from "../assets/kabilan-image.JPG"
+import {ImageUtil} from "../utils/ImageUtil"
 import Typewriter from "typewriter-effect";
 import './Home.css';
 
@@ -62,7 +61,25 @@ const Home = () => {
                         </article>
                 </section>
                 <div className='image-div'>
-                    <img src={kabilanImage} className='myImage' alt='MyImage'/>
+                    <div className='image-card'>
+                        <div className='img-text-container'>
+                            <div className='connection-div'>
+                                <h3>To Follow Me</h3>
+                                <div className='image-container-div'>
+                                    <a href='https://www.facebook.com/orc.kabikabilan.7' target='_blank' rel="noreferrer noopener">
+                                        <img src={ImageUtil.facebookImage} className='contact-image' />
+                                    </a>
+                                    <a href='https://www.instagram.com/_known_by_the_name_kabilan_' target='_blank' rel="noreferrer noopener">
+                                        <img src={ImageUtil.instagramImage} className='contact-image' />
+                                    </a>
+                                    <a href='https://www.linkedin.com/in/kabilan-g-r-9749631b5/' target='_blank' rel="noreferrer noopener">
+                                        <img src={ImageUtil.linkedInImage} className='contact-image' />
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <img src={ImageUtil.kabilanImage} className='myImage' alt='MyImage'/>
+                    </div>
                 </div>
                 </div>
             </div>
@@ -70,7 +87,7 @@ const Home = () => {
             {showButton && (
                 <div className='scrollToTopContainer'>          
                     <button className="scrollToTopButton" onClick={handleScrollToTop} >
-                        <img className='scroll-to-top-icon' src={topIcon} alt="scrollToTop" />
+                        <img className='scroll-to-top-icon' src={ImageUtil.topIcon} alt="scrollToTop" />
                     </button>
                 </div > 
             )} 
