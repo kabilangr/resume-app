@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Navigation from '../navigation/Navigation';
 import { Home as HomePage }  from '../utils/Constants';
-import {ImageUtil} from "../utils/ImageUtil"
+import { ImageUtil } from "../utils/ImageUtil";
 import Typewriter from "typewriter-effect";
 import './Home.css';
 
@@ -36,7 +36,7 @@ const Home = () => {
         <div className='home-main'>
             <div className='top-nav'><Navigation currentPage={HomePage}/></div>
             <div className="homePage-container">
-            <div className='background-css'>
+            <div className='background-box'>
                 <section className='top-Section'>
                     <article className='article'>
                         <h3 className='helloTitle homeText'>Hello, It's me</h3>
