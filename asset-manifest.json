@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/resume-app/static/css/main.9fbbdd31.css",
-    "main.js": "/resume-app/static/js/main.a045806a.js",
+    "main.js": "/resume-app/static/js/main.88e20bc9.js",
     "static/js/787.ec610b0e.chunk.js": "/resume-app/static/js/787.ec610b0e.chunk.js",
     "static/media/kabilan-image.JPG": "/resume-app/static/media/kabilan-image.795872772b1f8586427e.JPG",
     "static/media/KR-black.gif": "/resume-app/static/media/KR-black.3fa4b942e1da9f3fd9ed.gif",
@@ -14,11 +14,11 @@
     "static/media/linkedin.svg": "/resume-app/static/media/linkedin.3530f2ff708cbfa72ad0bed5a92bccc6.svg",
     "static/media/facebook.svg": "/resume-app/static/media/facebook.c6497cfad44bf6d8daaf64b0948540de.svg",
     "main.9fbbdd31.css.map": "/resume-app/static/css/main.9fbbdd31.css.map",
-    "main.a045806a.js.map": "/resume-app/static/js/main.a045806a.js.map",
+    "main.88e20bc9.js.map": "/resume-app/static/js/main.88e20bc9.js.map",
     "787.ec610b0e.chunk.js.map": "/resume-app/static/js/787.ec610b0e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9fbbdd31.css",
-    "static/js/main.a045806a.js"
+    "static/js/main.88e20bc9.js"
   ]
 }
