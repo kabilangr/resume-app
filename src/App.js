@@ -9,7 +9,7 @@ import {Contact} from "./Contact/Contact"
 
 function App() {
   return (
-    <Router>
+    <Router basename='/resume-app'>
       <div className="App">
           <Routes>
             <Route path="/" exact element={<Navigate to="/home" replace={true}/>}/>
