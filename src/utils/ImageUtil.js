@@ -7,6 +7,7 @@ import instagramImage from "../assets/instagram.svg"
 import linkedInImage from "../assets/linkedin.svg"
 import logoImg from '../assets/KR-static-black.png'
 import crossIcon from "../assets/cross-icon.svg"
+import reactjsLogo from "../assets/react-logo.svg"
 
 //gif import
 import logoGif from '../assets/KR-black.gif'
@@ -21,6 +22,7 @@ export const ImageUtil = {
     facebookImage,
     instagramImage,
     linkedInImage,
+    reactjsLogo,
 }
 
 //gif util
