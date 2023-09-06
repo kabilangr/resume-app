@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.9fbbdd31.css",
-    "main.js": "/static/js/main.c97103be.js",
+    "main.js": "/static/js/main.49186e4b.js",
     "static/js/787.ec610b0e.chunk.js": "/static/js/787.ec610b0e.chunk.js",
     "static/media/kabilan-image.JPG": "/static/media/kabilan-image.795872772b1f8586427e.JPG",
     "static/media/KR-black.gif": "/static/media/KR-black.3fa4b942e1da9f3fd9ed.gif",
@@ -14,11 +14,11 @@
     "static/media/linkedin.svg": "/static/media/linkedin.3530f2ff708cbfa72ad0bed5a92bccc6.svg",
     "static/media/facebook.svg": "/static/media/facebook.c6497cfad44bf6d8daaf64b0948540de.svg",
     "main.9fbbdd31.css.map": "/static/css/main.9fbbdd31.css.map",
-    "main.c97103be.js.map": "/static/js/main.c97103be.js.map",
+    "main.49186e4b.js.map": "/static/js/main.49186e4b.js.map",
     "787.ec610b0e.chunk.js.map": "/static/js/787.ec610b0e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9fbbdd31.css",
-    "static/js/main.c97103be.js"
+    "static/js/main.49186e4b.js"
   ]
 }
