@@ -9,16 +9,16 @@ import {Contact} from "./Contact/Contact"
 
 function App() {
   return (
-    <Router basename='/resume-app'>
+    <Router basename={window.location.pathname || ''} future={{ v7_startTransition: true }}>
       <div className="App">
           <Routes>
-            <Route path="/" exact element={<Navigate to="/home" replace={true}/>}/>
-            <Route path="/home" exact element={<Home/>}/>
-            <Route path="/languages" exact element={<Languages/>}/>
-            <Route path="/workExperience" exact element={<WorkExperience/>}/>
-            <Route path="/projects" exact element={<Projects/>}/>
-            <Route path="/about" exact element={<About/>}/>
-            <Route path="/contact" exact element={<Contact/>}/>
+            <Route path="/" element={<Navigate to="/home" replace={true}/>}/>
+            <Route path="/home"  element={<Home/>}/>
+            <Route path="/languages"  element={<Languages/>}/>
+            <Route path="/workExperience"  element={<WorkExperience/>}/>
+            <Route path="/projects"  element={<Projects/>}/>
+            <Route path="/about"  element={<About/>}/>
+            <Route path="/contact"  element={<Contact/>}/>
           </Routes>
       </div>
     </Router>
