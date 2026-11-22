@@ -1,22 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.9460100d.css",
-    "main.js": "/static/js/main.301dd5dc.js",
+    "main.css": "/static/css/main.7296c610.css",
+    "main.js": "/static/js/main.394e98fd.js",
     "static/js/787.ec610b0e.chunk.js": "/static/js/787.ec610b0e.chunk.js",
-    "static/media/portrait-robot.jpg": "/static/media/portrait-robot.94572393711157134765.jpg",
-    "static/media/portrait-cartoon.jpg": "/static/media/portrait-cartoon.362e861e9e7004314404.jpg",
     "static/media/kabilan-portrait.jpg": "/static/media/kabilan-portrait.863170ecc5ac7f3ed3c9.jpg",
     "static/media/coach.jpg": "/static/media/coach.4880390a4a510bc3987a.jpg",
     "static/media/home.jpg": "/static/media/home.b01b9ddacb47d7fbc50f.jpg",
     "static/media/wealth.jpg": "/static/media/wealth.4a0af90d8685040eb6f0.jpg",
     "static/media/valam-icon.png": "/static/media/valam-icon.ba08ccb81ffc2d239434.png",
     "index.html": "/index.html",
-    "main.9460100d.css.map": "/static/css/main.9460100d.css.map",
-    "main.301dd5dc.js.map": "/static/js/main.301dd5dc.js.map",
+    "main.7296c610.css.map": "/static/css/main.7296c610.css.map",
+    "main.394e98fd.js.map": "/static/js/main.394e98fd.js.map",
     "787.ec610b0e.chunk.js.map": "/static/js/787.ec610b0e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.9460100d.css",
-    "static/js/main.301dd5dc.js"
+    "static/css/main.7296c610.css",
+    "static/js/main.394e98fd.js"
   ]
 }
