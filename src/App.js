@@ -1,27 +1,61 @@
-import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom"
-import './App.css'
-import Home from "./home/Home"
-import {Languages} from "./languages/Languages"
-import {WorkExperience} from "./workExperience/workExperience"
-import {Projects} from "./projects/Projects"
-import {About} from "./About/About"
-import {Contact} from "./Contact/Contact"
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import './App.css';
+import { ThemeProvider } from './hooks/useTheme';
+import { LEGACY_ROUTES } from './utils/Constants';
+import Navigation from './navigation/Navigation';
+import Home from './home/Home';
+import { About } from './About/About';
+import { Skills } from './languages/Languages';
+import { WorkExperience } from './workExperience/workExperience';
+import { Projects } from './projects/Projects';
+import { Contact } from './Contact/Contact';
+import { Footer } from './components/Footer';
+
+function Page() {
+  const { hash } = useLocation();
+
+  // Scroll to the section named in the hash (used by legacy route redirects).
+  useEffect(() => {
+    if (!hash) return undefined;
+    const id = decodeURIComponent(hash.slice(1));
+    const timer = window.setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView();
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [hash]);
+
+  return (
+    <div className="App">
+      <a className="skip-link" href="#main">Skip to content</a>
+      <Navigation />
+      <main id="main" tabIndex={-1}>
+        <Home />
+        <About />
+        <Skills />
+        <WorkExperience />
+        <Projects />
+        <Contact />
+      </main>
+      <Footer />
+    </div>
+  );
+}
 
 function App() {
   return (
-    <Router basename={window.location.pathname || ''} future={{ v7_startTransition: true }}>
-      <div className="App">
-          <Routes>
-            <Route path="/" element={<Navigate to="/home" replace={true}/>}/>
-            <Route path="/home"  element={<Home/>}/>
-            <Route path="/languages"  element={<Languages/>}/>
-            <Route path="/workExperience"  element={<WorkExperience/>}/>
-            <Route path="/projects"  element={<Projects/>}/>
-            <Route path="/about"  element={<About/>}/>
-            <Route path="/contact"  element={<Contact/>}/>
-          </Routes>
-      </div>
-    </Router>
+    <ThemeProvider>
+      <Router basename={process.env.PUBLIC_URL} future={{ v7_startTransition: true }}>
+        <Routes>
+          <Route path="/" element={<Page />} />
+          {Object.entries(LEGACY_ROUTES).map(([path, id]) => (
+            <Route key={path} path={path} element={<Navigate to={{ pathname: '/', hash: `#${id}` }} replace />} />
+          ))}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 

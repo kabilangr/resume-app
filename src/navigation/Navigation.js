@@ -1,71 +1,125 @@
-import React, { useState } from 'react';
-import "./Navigation.css";
-import { ImageUtil, GifUtil } from "../utils/ImageUtil";
-import { Link } from 'react-router-dom'
-import { Home,
-    Languages,
-    WorkExperience,
-    Projects,
-    About,
-    Contact
-} from "../utils/Constants";
-import { COLORS } from "../utils/style"
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { NAV_ITEMS, SECTION_IDS } from '../utils/Constants';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { Logo } from './Logo';
+import { ThemeToggle } from './ThemeToggle';
+import { MobileMenu } from './MobileMenu';
+import './Navigation.css';
 
-const Navigation = (props) => {
+const Navigation = () => {
+  const reduced = usePrefersReducedMotion();
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeId, setActiveId] = useState(null);
+  const burgerRef = useRef(null);
 
-    const [showNavList, setShowNavList] = useState(false)
+  const closeMenu = useCallback((returnFocus) => {
+    setOpen(false);
+    if (returnFocus === true && burgerRef.current) burgerRef.current.focus();
+  }, []);
 
-    const selectedStyle = (pageName) => {
-        return (props.currentPage === pageName)? {
-            background : COLORS.secondaryColor,
-            color: COLORS.backgroundColor,
-            }: null
-    }
+  // sticky bar style
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 16);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-    const showHideNavList = () => {
-        setShowNavList(!showNavList)
-    }
+  // scroll spy
+  useEffect(() => {
+    if (typeof window.IntersectionObserver !== 'function') return undefined;
+    const observer = new window.IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveId(entry.target.id);
+        });
+      },
+      { rootMargin: '-40% 0px -55% 0px' }
+    );
+    SECTION_IDS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
 
-    return (
-    <div className='navigation-main'>
-        <nav className='nav-container'>
-                <img className='logo-image' src={GifUtil.logoGif} alt=".logo" />
-                <img className="logo-image static" src={ImageUtil.logoImg} alt=".logo" />
-            <ul className='list-container'>
-                <li className='list-data'><Link to={"/home"} style={selectedStyle(Home)} className="link">{Home}</Link></li>
-                <li className='list-data'><Link to={"/languages"} style={selectedStyle(Languages)} className="link">{Languages}</Link></li>
-                <li className='list-data'><Link to={"/workExperience"} style={selectedStyle(WorkExperience)} className="link">{WorkExperience}</Link></li>
-                <li className='list-data'><Link to={"/projects"} style={selectedStyle(Projects)} className="link">{Projects}</Link></li>
-                <li className='list-data'><Link to={"/about"} style={selectedStyle(About)} className="link">{About}</Link></li>
-                <li className='list-data'><Link to={"/contact"} style={selectedStyle(Contact)} className="link">{Contact}</Link></li>
-                {!showNavList &&
-                <a class="hamburger-icon" onClick={showHideNavList}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="52" height="24" viewBox="0 0 52 24" >
-                        <g id="Group_9" data-name="Group 9" transform="translate(-294 -47)">
-                            <rect id="Rectangle_3" data-name="Rectangle 3" width="42" height="4" rx="2" transform="translate(304 47)" fill="#f1e9dbff"/>
-                            <rect id="Rectangle_5" data-name="Rectangle 5" width="42" height="4" rx="2" transform="translate(304 67)" fill="#f1e9dbff" />
-                            <rect id="Rectangle_4" data-name="Rectangle 4" width="42" height="4" rx="2" transform="translate(304 57)" fill="#f1e9dbff"/>
-                        </g>
-                    </svg>
-                </a>}
-            </ul>
-        </nav>
-        { showNavList &&
-        <nav className='nav-list'>
-                <a class="hamburger-icon" onClick={showHideNavList}>
-                    <img className='crossIcon' src={ImageUtil.crossIcon} />
+  // Esc, resize and scroll lock
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => {
+      if (e.key === 'Escape') closeMenu(true);
+    };
+    const onResize = () => {
+      if (window.innerWidth >= 768) closeMenu(false);
+    };
+    document.addEventListener('keydown', onKey);
+    window.addEventListener('resize', onResize);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', onResize);
+      document.body.style.overflow = '';
+    };
+  }, [open, closeMenu]);
+
+  const focusTarget = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.focus({ preventScroll: true });
+  };
+
+  return (
+    <header className="nav" data-scrolled={scrolled ? 'true' : 'false'}>
+      <div className="container nav__bar">
+        <a className="nav__logo" href="#hero" aria-label="Kabilan GR, home" onClick={() => focusTarget('hero')}>
+          <Logo />
+        </a>
+        <nav aria-label="Main" className="nav__main">
+          <ul className="nav__links">
+            {NAV_ITEMS.map((n) => (
+              <li key={n.id}>
+                <a
+                  href={`#${n.id}`}
+                  className="nav__link"
+                  aria-current={activeId === n.id ? 'true' : undefined}
+                  onClick={() => focusTarget(n.id)}
+                >
+                  {activeId === n.id ? (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="nav__pill"
+                      aria-hidden="true"
+                      transition={reduced ? { duration: 0 } : { type: 'spring', stiffness: 380, damping: 32 }}
+                    />
+                  ) : null}
+                  <span className="nav__label">{n.label}</span>
                 </a>
-            <ul>
-                <li ><Link to={"/home"} style={selectedStyle(Home)} className="link">{Home}</Link></li>
-                <li ><Link to={"/languages"} style={selectedStyle(Languages)} className="link">{Languages}</Link></li>
-                <li ><Link to={"/workExperience"} style={selectedStyle(WorkExperience)} className="link">{WorkExperience}</Link></li>
-                <li ><Link to={"/projects"} style={selectedStyle(Projects)} className="link">{Projects}</Link></li>
-                <li ><Link to={"/about"} style={selectedStyle(About)} className="link">{About}</Link></li>
-                <li ><Link to={"/contact"} style={selectedStyle(Contact)} className="link">{Contact}</Link></li>
-            </ul>
-        </nav>}
-    </div>
-    )
-}
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div className="nav__actions">
+          <ThemeToggle />
+          <button
+            ref={burgerRef}
+            type="button"
+            className="nav__burger"
+            data-open={open ? 'true' : 'false'}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
+      </div>
+      <MobileMenu open={open} onClose={closeMenu} activeId={activeId} />
+    </header>
+  );
+};
 
-export default Navigation
+export default Navigation;

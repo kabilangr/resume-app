@@ -1,16 +1,308 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap');
+/* =========================================================
+   design tokens: Golden Hour Cafe (light default) + Brick dusk (dark)
+   Breakpoints cannot be used inside media queries as var(),
+   so they are documented as custom properties and repeated literally in CSS.
+   scripts/check-contrast.js parses the light and dark blocks below:
+   keep one `--name: value;` per line and do not repeat colour tokens elsewhere.
+   ========================================================= */
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--backgroundColor);
+/* ===== Light: Golden Hour Café (default) ===== */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Surfaces */
+  --color-bg:            #fbf3e7;   /* cream, the shirt and robot-shell colour */
+  --color-bg-elevated:   #fffaf3;   /* nav when scrolled (solid fallback), menu overlay, footer */
+  --color-surface:       #fffaf3;   /* cards, hero card matte */
+  --color-surface-2:     #f3e4cf;   /* nested panels, idle chips, hint chip */
+  --color-surface-glass: rgba(255, 250, 243, 0.78);
+  --color-border:        rgba(43, 25, 18, 0.14);   /* decorative hairlines only */
+  --color-border-strong: #8f6f58;                  /* UI boundary, 3:1 or more */
+
+  /* Text */
+  --color-text:          #2b1912;   /* walnut, 15.2:1 on bg */
+  --color-text-muted:    #5e4636;   /* 7.9:1 on bg. Also used for labels (no "faint" token) */
+  --color-text-on-accent:#fffaf3;   /* on brick and on both brand gradient ends */
+
+  /* Accent family: brick */
+  --color-accent:        #9a3a22;   /* primary, CTA fill, links, eyebrows */
+  --color-accent-strong: #7a2e1a;   /* link and hover text, 8.5:1 on bg */
+  --color-accent-2:      #7a4f00;   /* secondary, honey wood */
+  --color-accent-3:      #9a3a22;   /* focus ring, small highlights */
+  --color-highlight:     #59c8ff;   /* robot cyan. REVEAL RING AND ITS GLOW ONLY */
+  --color-success:       #3d6420;   /* leaf */
+  --color-warning:       #8a5a00;
+  --color-danger:        #a3231a;
+
+  /* Category hues (TR2) */
+  --cat-frontend: #9a3a22;
+  --cat-mobile:   #9b3048;
+  --cat-backend:  #7a4f00;
+  --cat-cloud:    #6b4a2e;
+  --cat-vibe:     #276662;
+  --cat-agents:   #0a6a8f;
+  --cat-iot:      #3d6420;
+  --cat-process:  #5e4636;
+
+  /* Gradients. Both brand ends keep 4.5:1 with on-accent. Text gradient stays in the brick family. */
+  --gradient-brand: linear-gradient(135deg, #9a3a22 0%, #7a2e1a 100%);
+  --gradient-text:  linear-gradient(100deg, #7a2e1a 0%, #9a3a22 55%, #7a4f00 100%);
+  --ring-a: #9a3a22;                /* conic stops, decorative borders only */
+  --ring-b: #ffcf7a;
+  --gradient-ring:  conic-gradient(from 0deg, var(--ring-a), var(--ring-b), var(--ring-a));
+
+  /* Warm light: blobs, page ambient, dot grid, card spotlight */
+  --blob-a: radial-gradient(circle at 30% 30%, rgba(255, 199, 104, 0.40), transparent 60%);
+  --blob-b: radial-gradient(circle at 70% 40%, rgba(180, 83, 47, 0.18), transparent 60%);
+  --blob-c: radial-gradient(circle at 50% 70%, rgba(255, 241, 194, 0.55), transparent 60%);
+  --ambient: radial-gradient(ellipse 60% 40% at 85% -5%, rgba(255, 199, 104, 0.28), transparent 70%),
+             radial-gradient(ellipse 50% 40% at 0% 100%, rgba(180, 83, 47, 0.07), transparent 70%);
+  --grid-dot: rgba(122, 47, 24, 0.10);
+  --spotlight: rgba(255, 199, 104, 0.22);   /* gold cursor spotlight on cards */
+
+  /* Hero card, glow, bokeh, grain, marquee */
+  --glow-hero:   radial-gradient(60% 50% at 70% 55%, rgba(255, 199, 104, 0.35), transparent 70%);
+  --hero-card-shadow: 0 0 0 6px var(--color-surface), 0 30px 60px -24px rgba(122, 47, 24, 0.45);
+  --hero-card-mask:   none;
+  --reveal-glow: rgba(89, 200, 255, 0.90);
+  --bokeh: radial-gradient(circle, #fff1c2 0, #ffc768 40%, transparent 70%);
+  --marquee-ink: rgba(154, 58, 34, 0.10);   /* decorative, aria-hidden */
+  --grain-opacity: 0.03;
+  --grain-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .17  0 0 0 0 .1  0 0 0 0 .07  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  /* Shadows and glows (warm brown, never grey) */
+  --shadow-sm:   0 1px 2px rgba(122, 47, 24, 0.12);
+  --shadow-md:   0 12px 30px -14px rgba(122, 47, 24, 0.25);
+  --shadow-lg:   0 30px 60px -24px rgba(122, 47, 24, 0.35);
+  --glow-accent: 0 0 0 1px rgba(154, 58, 34, 0.40), 0 10px 30px -8px rgba(154, 58, 34, 0.30);
+  --glow-secondary: 0 0 0 1px rgba(122, 79, 0, 0.40), 0 12px 30px -8px rgba(122, 79, 0, 0.30);
+  --glow-violet: var(--glow-secondary);     /* legacy name still used by Projects.css */
+  --focus-ring:  #9a3a22;                   /* 6.3:1 on bg */
+
+  /* Components */
+  --phone-bezel: #2b1912;                   /* Valam phone frames (replaces the old hard-coded bezel) */
+  --logo-keyline: #2b1912;                  /* inline Logo.js: shell stroke */
+  --logo-ear:     #2b1912;                  /* inline Logo.js: ear pod fill */
+  --logo-ear-stroke: #2b1912;
+  --logo-hover-shadow: drop-shadow(0 4px 8px rgba(122, 47, 24, 0.35));
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* ===== Dark: Brick dusk (optional) ===== */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg:            #2b1912;
+  --color-bg-elevated:   #331f16;
+  --color-surface:       #352017;
+  --color-surface-2:     #412a1f;
+  --color-surface-glass: rgba(53, 32, 23, 0.72);
+  --color-border:        rgba(246, 236, 221, 0.14);
+  --color-border-strong: #9a7a62;
+
+  --color-text:          #f6ecdd;
+  --color-text-muted:    #d3bfa8;
+  --color-text-on-accent:#2b1912;
+
+  /* Accent family: fairy gold */
+  --color-accent:        #ffcf7a;
+  --color-accent-strong: #ffe0a3;
+  --color-accent-2:      #f08a62;
+  --color-accent-3:      #ffcf7a;
+  --color-highlight:     #6fdcff;   /* REVEAL RING AND ITS GLOW ONLY */
+  --color-success:       #a9cf6a;
+  --color-warning:       #ffcf7a;
+  --color-danger:        #ff9a8a;
+
+  --cat-frontend: #f08a62;
+  --cat-mobile:   #f29bb0;
+  --cat-backend:  #e8a868;
+  --cat-cloud:    #e0c49a;
+  --cat-vibe:     #7fd1c6;
+  --cat-agents:   #6fdcff;
+  --cat-iot:      #a9cf6a;
+  --cat-process:  #d3bfa8;
+
+  --gradient-brand: linear-gradient(135deg, #ffcf7a 0%, #f0a860 100%);
+  --gradient-text:  linear-gradient(100deg, #ffe0a3 0%, #ffcf7a 55%, #f08a62 100%);
+  --ring-a: #ffcf7a;
+  --ring-b: #f08a62;
+  --gradient-ring:  conic-gradient(from 0deg, var(--ring-a), var(--ring-b), var(--ring-a));
+
+  --blob-a: radial-gradient(circle at 30% 30%, rgba(255, 199, 104, 0.16), transparent 60%);
+  --blob-b: radial-gradient(circle at 70% 40%, rgba(180, 83, 47, 0.28), transparent 60%);
+  --blob-c: radial-gradient(circle at 50% 70%, rgba(255, 241, 194, 0.07), transparent 60%);
+  --ambient: radial-gradient(ellipse 60% 40% at 85% -5%, rgba(255, 199, 104, 0.12), transparent 70%),
+             radial-gradient(ellipse 50% 40% at 0% 100%, rgba(180, 83, 47, 0.14), transparent 70%);
+  --grid-dot: rgba(246, 236, 221, 0.07);
+  --spotlight: rgba(255, 207, 122, 0.14);
+
+  /* Dark hero card: no matte, feathered edge (tuned, see section 4.3c) plus two warm glows */
+  --glow-hero:   radial-gradient(60% 50% at 70% 55%, rgba(255, 199, 104, 0.18), transparent 70%),
+                 radial-gradient(50% 45% at 30% 70%, rgba(180, 83, 47, 0.25), transparent 70%);
+  --hero-card-shadow: none;
+  --hero-card-mask:   radial-gradient(ellipse 54% 56% at 50% 50%, #000 58%, transparent 92%);
+  --reveal-glow: rgba(111, 220, 255, 0.85);
+  --marquee-ink: rgba(246, 236, 221, 0.07);
+  --grain-opacity: 0.04;
+  --grain-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .96  0 0 0 0 .93  0 0 0 0 .87  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  --shadow-sm:   0 1px 2px rgba(14, 6, 3, 0.5);
+  --shadow-md:   0 10px 30px -10px rgba(14, 6, 3, 0.65);
+  --shadow-lg:   0 30px 70px -20px rgba(14, 6, 3, 0.75);
+  --glow-accent: 0 0 0 1px rgba(255, 207, 122, 0.45), 0 0 32px -4px rgba(255, 207, 122, 0.35);
+  --glow-secondary: 0 0 0 1px rgba(240, 138, 98, 0.50), 0 0 32px -4px rgba(240, 138, 98, 0.35);
+  --glow-violet: var(--glow-secondary);
+  --focus-ring:  #ffcf7a;
+
+  --phone-bezel: #150b07;                   /* darker than the page so the frame still reads */
+  --logo-keyline: #f6ecdd;
+  --logo-ear:     #412a1f;
+  --logo-ear-stroke: #f6ecdd;
+  --logo-hover-shadow: drop-shadow(0 0 10px rgba(255, 207, 122, 0.45));
+}
+
+/* ===== Shared (both modes): replaces the whole old non-colour :root block ===== */
+:root {
+  /* Fonts (TR4). Fraunces loads wght 600..700 only, Nunito 400/600/700, Baloo Thambi 2 600. */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body:    "Nunito", ui-rounded, system-ui, sans-serif;
+  --font-tamil:   "Baloo Thambi 2", "Nunito", system-ui, sans-serif;
+  --fvs-display:  "SOFT" 100, "WONK" 0;
+
+  --fs-display: clamp(2.75rem, 1.2rem + 7.5vw, 6.5rem);   /* hero h1: 44px @360 -> 104px @1280+ */
+  --fs-h1:      clamp(2.25rem, 1.4rem + 3.6vw, 4rem);
+  --fs-h2:      clamp(1.75rem, 1.3rem + 2vw, 3rem);       /* section titles */
+  --fs-h3:      clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
+  --fs-h4:      1.125rem;
+  --fs-lead:    clamp(1.0625rem, 1rem + 0.35vw, 1.3125rem);
+  --fs-body:    1rem;                                      /* 16px, never below */
+  --fs-small:   0.875rem;                                  /* 14px */
+  --fs-label:   0.8125rem;                                 /* 13px eyebrow, caps */
+
+  --lh-tight: 1.04;
+  --lh-snug:  1.2;
+  --lh-body:  1.65;
+
+  --fw-regular:  400;
+  --fw-medium:   600;   /* Nunito 500 is not loaded, so "medium" maps to 600 */
+  --fw-semibold: 600;
+  --fw-bold:     700;
+
+  --tracking-tight: -0.02em;   /* Fraunces needs less negative tracking */
+  --tracking-label: 0.08em;    /* Nunito 700 uppercase eyebrows */
+
+  /* ---- Spacing (4px base) ---- unchanged */
+  --space-1: 0.25rem;  --space-2: 0.5rem;   --space-3: 0.75rem;
+  --space-4: 1rem;     --space-5: 1.5rem;   --space-6: 2rem;
+  --space-7: 3rem;     --space-8: 4rem;     --space-9: 6rem;
+  --space-10: 8rem;
+  --section-pad-y: clamp(4.5rem, 3rem + 6vw, 8.5rem);  /* 72px @360 -> 136px @1280 */
+  --gutter:        clamp(1rem, 0.5rem + 2.2vw, 2rem);  /* 16px @360 -> 32px @1280 */
+  --container:     1200px;
+  --container-narrow: 760px;
+  --nav-height:    64px;
+
+  /* ---- Radii: rounder than v1, Pixar-soft ---- */
+  --radius-xs: 8px;   --radius-sm: 12px;  --radius-md: 16px;
+  --radius-lg: 20px;  --radius-xl: 28px;  --radius-pill: 999px;
+
+  /* ---- Z-index ---- unchanged */
+  --z-bg: -1;  --z-base: 0;  --z-card: 1;  --z-sticky: 50;
+  --z-nav: 100;  --z-menu: 200;  --z-skip: 400;
+
+  /* ---- Motion ---- unchanged */
+  --dur-instant: 90ms;
+  --dur-fast:    160ms;
+  --dur-base:    280ms;
+  --dur-slow:    520ms;
+  --dur-reveal:  700ms;
+  --ease-standard: cubic-bezier(0.2, 0.0, 0, 1);
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);     /* expo-out, reveals */
+  --ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring-ish: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-bounce:   cubic-bezier(0.34, 1.4, 0.64, 1);  /* same curve, friendlier name for buttons and logo */
+
+  /* ---- Breakpoints (documentation; use literals in @media) ---- unchanged */
+  --bp-mobile: 480px;   /* @media (max-width: 480px) */
+  --bp-tablet: 768px;   /* nav collapses below 768px, i.e. max-width: 767.98px */
+  --bp-laptop: 1024px;  /* @media (min-width: 1024px) */
+  --bp-desktop:1280px;  /* @media (min-width: 1280px) */
+}
+
+/* Display type and the SOFT axis */
+h1, h2, h3, h4, .logo__word, .hero__name, .hero__stat-num, .marquee__row, .contact__glyph, .ring__initials,
+.langs__greeting:not([lang="ta"]) {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvs-display);
+  letter-spacing: var(--tracking-tight);
+}
+.langs__greeting[lang="ta"] { font-family: var(--font-tamil); font-weight: 600; font-variation-settings: normal; letter-spacing: 0; }
+
+/* Grain: never over text */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--grain-img);
+  background-size: 160px 160px;
+  opacity: var(--grain-opacity);
+}
+
+/* Reduced motion: collapse all CSS motion tokens. JS-driven motion is handled
+   by usePrefersReducedMotion (see section 8). */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms; --dur-base: 1ms; --dur-slow: 1ms; --dur-reveal: 1ms;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---- Global base rules ---- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-height) + 16px); }
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  background-image: var(--ambient);
+  background-attachment: fixed;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  transition: background-color var(--dur-base), color var(--dur-base);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-snug);
+  margin: 0;
+}
+h2 { font-size: var(--fs-h2); font-weight: var(--fw-bold); }
+h3 { font-size: var(--fs-h3); font-weight: var(--fw-semibold); }
+h4 { font-size: var(--fs-h4); font-weight: var(--fw-semibold); }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; border-radius: inherit; }
+:focus:not(:focus-visible) { outline: none; }
+a { color: var(--color-accent-strong); text-underline-offset: 0.2em; }
+img { max-width: 100%; height: auto; display: block; }
+button { font: inherit; color: inherit; cursor: pointer; }
+::selection { background: var(--color-accent); color: var(--color-text-on-accent); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.container { width: min(100% - 2 * var(--gutter), var(--container)); margin-inline: auto; }
+@media (forced-colors: active) {
+  .tilt-card { border: 1px solid CanvasText; }
 }

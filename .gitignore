@@ -21,3 +21,42 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# macOS metadata files on non-APFS drives
+._*
+
+# Claude Code local settings
+/.claude
+/docs
+
+# environment files
+.env
+.env.*
+!.env.example
+
+# logs
+*.log
+pnpm-debug.log*
+lerna-debug.log*
+
+# editors / IDEs
+/.idea
+*.swp
+*.swo
+*~
+
+# OS files
+Thumbs.db
+Desktop.ini
+.Spotlight-V100
+.Trashes
+
+# caches & tool output
+.eslintcache
+.cache/
+*.tsbuildinfo
+graphify-out/
+
+# local-only files
+/scripts/check-contrast.js
+/CHANGELOG.md

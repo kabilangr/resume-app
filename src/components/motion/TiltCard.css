@@ -1,0 +1,40 @@
+.tilt-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: border-color var(--dur-base), box-shadow var(--dur-base);
+  min-width: 0;
+  --mx: 50%;
+  --my: 30%;
+}
+.tilt-card:hover,
+.tilt-card:focus-within {
+  border-color: var(--card-hue, var(--color-accent));
+  box-shadow: var(--glow-accent);
+}
+@supports (border-color: color-mix(in srgb, red 50%, transparent)) {
+  .tilt-card:hover,
+  .tilt-card:focus-within {
+    border-color: color-mix(in srgb, var(--card-hue, var(--color-accent)) 60%, transparent);
+  }
+}
+.tilt-card__spot {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(360px circle at var(--mx) var(--my), var(--spotlight), transparent 65%);
+  transition: opacity var(--dur-base);
+  pointer-events: none;
+}
+.tilt-card:hover .tilt-card__spot,
+.tilt-card:focus-within .tilt-card__spot {
+  opacity: 1;
+}
+.tilt-card__content {
+  position: relative;
+  height: 100%;
+  border-radius: inherit;
+}

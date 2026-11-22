@@ -1,0 +1,15 @@
+.section-heading { margin-bottom: var(--space-6); display: grid; gap: var(--space-3); }
+.section-heading .lead { max-width: var(--container-narrow); }
+.section-heading__bar {
+  display: inline-block;
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--gradient-brand);
+  transform-origin: left;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+@media (min-width: 768px) {
+  .section-heading { margin-bottom: var(--space-7); }
+}

@@ -1,13 +1,9 @@
+// Compat map: colours now come from CSS custom properties in index.css.
 export const COLORS = {
-    backgroundColor: "#07020dff",
-    secondaryColor: "#5db7deff",
-    textColor: "#f1e9dbff",
-    midColor: "#a39b8bff",
-    primaryColor: "#716a5cff",
-    white: "#f7ebeb",
-}
-// --black: #07020dff;
-// --aero: #5db7deff;
-// --alabaster: #f1e9dbff;
-// --khaki: #a39b8bff;
-// --dim-gray: #716a5cff;
+  backgroundColor: 'var(--color-bg)',
+  secondaryColor: 'var(--color-accent)',
+  textColor: 'var(--color-text)',
+  midColor: 'var(--color-text-muted)',
+  primaryColor: 'var(--color-text-muted)',
+  white: 'var(--color-text)',
+};

@@ -1,31 +1,12 @@
+// image imports
+import kabilanImage from '../assets/kabilan-portrait.jpg';
+import valamIcon from '../assets/projects/valam/valam-icon.png';
+import valamHome from '../assets/projects/valam/home.jpg';
+import valamCoach from '../assets/projects/valam/coach.jpg';
+import valamWealth from '../assets/projects/valam/wealth.jpg';
 
-//image import
-import topIcon from "../assets/scroll-to-top.svg"
-import kabilanImage from "../assets/kabilan-image.JPG"
-import facebookImage from "../assets/facebook.svg"
-import instagramImage from "../assets/instagram.svg"
-import linkedInImage from "../assets/linkedin.svg"
-import logoImg from '../assets/KR-static-black.png'
-import crossIcon from "../assets/cross-icon.svg"
-import reactjsLogo from "../assets/react-logo.svg"
-
-//gif import
-import logoGif from '../assets/KR-black.gif'
-
-
-//Image util
 export const ImageUtil = {
-    logoImg,
-    crossIcon,
-    topIcon,
-    kabilanImage,
-    facebookImage,
-    instagramImage,
-    linkedInImage,
-    reactjsLogo,
-}
-
-//gif util
-export const GifUtil = {
-    logoGif,
-}
+  kabilanImage,
+  valamIcon,
+  valamShots: { home: valamHome, coach: valamCoach, wealth: valamWealth },
+};
