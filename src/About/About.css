@@ -8,7 +8,7 @@
 .about__stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); min-width: 0; }
 .about__stat-item { min-width: 0; }
 .about__stat-item--wide { grid-column: 1 / -1; }
-.stat { padding: 24px; display: grid; gap: 8px; align-content: center; min-height: 112px; height: 100%; }
+.stat { padding: var(--card-pad); display: grid; gap: 8px; align-content: center; min-height: 112px; height: 100%; }
 .stat__num { font-family: var(--font-display); font-weight: var(--fw-bold); font-size: clamp(2rem, 1.4rem + 3vw, 3.25rem); line-height: 1; }
 .stat__label { color: var(--color-text-muted); font-size: var(--fs-small); }
 .platforms { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -18,7 +18,7 @@
   font-size: var(--fs-small); font-weight: var(--fw-medium);
 }
 
-.edu { padding: 24px; display: flex; gap: var(--space-4); align-items: flex-start; height: 100%; }
+.edu { padding: var(--card-pad); display: flex; gap: var(--space-4); align-items: flex-start; height: 100%; }
 .edu__icon { flex: 0 0 44px; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--color-surface-2); color: var(--color-accent-strong); }
 .edu__inst { color: var(--color-text-muted); margin-top: 4px; }
 .edu__years { font-family: var(--font-body); font-weight: var(--fw-bold); font-size: var(--fs-label); color: var(--color-text-muted); margin-top: 8px; }

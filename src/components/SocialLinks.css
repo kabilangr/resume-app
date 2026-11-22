@@ -13,13 +13,18 @@
   transition: background-color var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
 }
 .socials--labelled .socials__link { padding: 0 18px; font-weight: var(--fw-medium); }
-.socials__link:hover {
-  background: var(--color-surface-2);
-  border-color: var(--color-accent);
-  color: var(--color-accent-strong);
-  transform: translateY(-2px);
+.socials__link:active { transform: translateY(0) scale(0.96); background: var(--color-surface-2); }
+@media (hover: hover) and (pointer: fine) {
+  .socials__link:hover {
+    background: var(--color-surface-2);
+    border-color: var(--color-accent);
+    color: var(--color-accent-strong);
+    transform: translateY(-2px);
+  }
 }
-.socials__link:active { transform: translateY(0) scale(0.96); }
 @media (prefers-reduced-motion: reduce) {
-  .socials__link:hover, .socials__link:active { transform: none; }
+  .socials__link:active { transform: none; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+  .socials__link:hover { transform: none; }
 }

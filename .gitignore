@@ -57,6 +57,6 @@ Desktop.ini
 *.tsbuildinfo
 graphify-out/
 
-# local-only files
-/scripts/check-contrast.js
-/CHANGELOG.md
+
+# per-task parallel build output (site-coder / site-tester)
+.build-tmp/

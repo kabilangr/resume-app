@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { coreStack, skillCategories } from '../data/portfolio';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { useCanHover } from '../hooks/useCanHover';
+import { useInViewPause } from '../hooks/useInViewPause';
 import { Reveal } from '../components/motion/Reveal';
 import { TiltCard } from '../components/motion/TiltCard';
 import { SectionHeading } from '../components/SectionHeading';
@@ -98,6 +100,7 @@ function CornerArt({ id }) {
 }
 
 function SkillCategoryCard({ cat, reduced }) {
+  const canHover = useCanHover();
   const Icon = categoryIcons[cat.icon];
   return (
     <TiltCard max={7} className={`skill-card ${cat.highlight ? 'skill-card--glow' : ''}`} style={{ '--card-hue': cat.hue }}>
@@ -105,7 +108,7 @@ function SkillCategoryCard({ cat, reduced }) {
         {cat.highlight ? <CornerArt id={cat.id} /> : null}
         <motion.span
           className="skill-card__icon"
-          whileHover={reduced ? undefined : { rotate: [0, -8, 6, 0] }}
+          whileHover={reduced || !canHover ? undefined : { rotate: [0, -8, 6, 0] }}
           transition={{ duration: 0.5 }}
         >
           <Icon size={28} />
@@ -123,6 +126,8 @@ function SkillCategoryCard({ cat, reduced }) {
 
 export const Skills = () => {
   const reduced = usePrefersReducedMotion();
+  const sectionRef = useRef(null);
+  useInViewPause(sectionRef);
   const [filter, setFilter] = useState('all');
   const options = [
     { id: 'all', label: 'All' },
@@ -141,7 +146,7 @@ export const Skills = () => {
       };
 
   return (
-    <section id="skills" className="skills" aria-labelledby="skills-title" tabIndex={-1}>
+    <section ref={sectionRef} id="skills" className="skills" aria-labelledby="skills-title" tabIndex={-1}>
       <div className="container">
         <SectionHeading number="02" label="Skills" id="skills-title" title="Skills" />
         <div className="rings-wrap">

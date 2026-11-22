@@ -31,11 +31,13 @@
   filter: drop-shadow(0 0 6px var(--reveal-glow));
 }
 .reveal__hint {
-  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); white-space: nowrap;
+  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+  white-space: normal; text-align: center; max-width: calc(100% - 16px); line-height: 1.25;
   font-family: var(--font-body); font-weight: var(--fw-bold); font-size: var(--fs-small); color: var(--color-text-muted);
   background: var(--color-surface-2); border: 1px solid var(--color-border);
   border-radius: 999px; padding: 4px 12px; pointer-events: none;
 }
-@media (prefers-reduced-motion: reduce) {
+/* Reduced motion: hover users lose the hint; touch users keep it, it is the only cue that a tap does something. */
+@media (prefers-reduced-motion: reduce) and (hover: hover) {
   .reveal__hint { display: none; }
 }

@@ -26,7 +26,7 @@
   }
 }
 .nav__bar { height: var(--nav-height); display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
-.nav__logo { display: inline-flex; text-decoration: none; border-radius: var(--radius-md); }
+.nav__logo { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; text-decoration: none; border-radius: var(--radius-md); }
 .logo { display: inline-flex; align-items: center; gap: 10px; }
 .logo__mark { width: 40px; height: 40px; flex: none; transition: transform 220ms var(--ease-bounce), filter 220ms; }
 .logo__word {
@@ -34,12 +34,11 @@
   color: var(--color-text); line-height: 1;
 }
 .logo__tld { color: var(--color-text-muted); font-weight: 600; }
-.nav__logo:hover .logo__mark { transform: scale(1.06) rotate(-4deg); filter: var(--logo-hover-shadow); }
 @media (max-width: 479.98px) {
   .logo__word { display: none; }
 }
 .nav__main { display: none; }
-.nav__links { display: flex; gap: 4px; }
+.nav__links { display: none; gap: 4px; }
 .nav__link {
   position: relative;
   display: inline-flex;
@@ -53,9 +52,7 @@
   text-decoration: none;
   transition: color var(--dur-fast), background-color var(--dur-fast);
 }
-.nav__link:hover { color: var(--color-text); background: var(--color-surface-2); }
 .nav__link[aria-current='true'] { color: var(--color-text); }
-.nav__link[aria-current='true']:hover { background: transparent; }
 .nav__pill {
   position: absolute;
   inset: 0;
@@ -75,7 +72,6 @@
   padding: 0;
   transition: background-color var(--dur-fast), transform var(--dur-fast);
 }
-.theme-toggle:hover, .nav__burger:hover { background: var(--color-surface-2); }
 .theme-toggle:active, .nav__burger:active { transform: scale(0.94); }
 .theme-toggle__icon {
   position: absolute; display: inline-flex;
@@ -95,35 +91,92 @@
 .nav__burger[data-open='true'] span:nth-child(2) { opacity: 0; }
 .nav__burger[data-open='true'] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
+/* Full-screen modal: a 64px top row (logo, theme toggle, Close) above one scroll area. */
 .menu {
   position: fixed;
-  inset: var(--nav-height) 0 0 0;
+  inset: 0;
   z-index: var(--z-menu);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-rows: var(--nav-height) minmax(0, 1fr);
+  grid-template-areas: "logo toggle close" "body body body";
+  column-gap: var(--tap-gap);
+  align-items: center;
+  padding: 0 var(--gutter) calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
   background: var(--color-bg-elevated);
   background-image: var(--blob-a);
-  padding: var(--space-6) var(--gutter);
-  display: flex; flex-direction: column; justify-content: space-between;
-  overflow-y: auto;
+  overscroll-behavior: contain;
+  overflow: hidden;
 }
+.menu__logo { grid-area: logo; justify-self: start; display: inline-flex; }
+.menu__toggle { grid-area: toggle; display: inline-flex; }
+.menu__close {
+  grid-area: close;
+  display: inline-flex; align-items: center; gap: 8px;
+  min-width: 44px; min-height: 44px; padding: 0 16px 0 12px;
+  border-radius: var(--radius-pill); border: 1px solid var(--color-border-strong);
+  background: transparent; color: var(--color-text);
+  font-family: var(--font-body); font-weight: var(--fw-semibold); font-size: var(--fs-body);
+  transition: background-color var(--dur-fast), transform var(--dur-fast);
+}
+.menu__close:active { transform: scale(0.96); }
+.menu__scroll {
+  grid-area: body; align-self: stretch; min-height: 0;
+  overflow-y: auto; overscroll-behavior: contain;
+  display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-5);
+  padding-top: var(--space-4);
+}
+.menu__scroll > * { width: min(100%, 560px); margin-inline: auto; }
 .menu__link {
   display: flex; align-items: center; gap: var(--space-4);
   min-height: 64px;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 9vw, 3rem);
+  font-size: clamp(2rem, 1.25rem + 4vw, 3rem);
   font-weight: var(--fw-bold);
   color: var(--color-text);
   text-decoration: none;
 }
+.menu__link:active { color: var(--color-accent-strong); }
 .menu__link[aria-current='true'] { color: var(--color-accent-strong); }
 .menu__index { font-family: var(--font-body); font-size: var(--fs-label); font-weight: var(--fw-bold); color: var(--color-text-muted); }
 .menu__foot { display: flex; flex-direction: column; gap: var(--space-3); color: var(--color-text-muted); }
+@media (max-height: 640px) {
+  .menu__link { min-height: 56px; }
+}
 
-@media (min-width: 768px) {
+/* Landscape phones: two-column menu, tighter links */
+@media (orientation: landscape) and (max-height: 500px) {
+  .menu__link { min-height: 48px; font-size: 1.75rem; }
+}
+@media (orientation: landscape) and (max-height: 500px) and (min-width: 568px) {
+  .menu__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-6); }
+}
+
+/* Desktop nav from 1024; the burger and the menu only exist below it */
+@media (min-width: 1024px) {
   .nav__main { display: block; }
+  .nav__links { display: flex; }
   .nav__burger { display: none; }
   .menu { display: none; }
 }
+
+/* Touch devices: the scrolled bar is solid, with no backdrop blur (it repaints on every scroll frame) */
+@media (hover: none) {
+  .nav[data-scrolled='true'] { background: var(--color-bg-elevated); }
+  .nav[data-scrolled='true']::before { display: none; }
+}
+
+/* Hover only on devices that can hover (touch browsers emulate hover on tap and leave it stuck) */
+@media (hover: hover) and (pointer: fine) {
+  .nav__logo:hover .logo__mark { transform: scale(1.06) rotate(-4deg); filter: var(--logo-hover-shadow); }
+  .nav__link:hover { color: var(--color-text); background: var(--color-surface-2); }
+  .nav__link[aria-current='true']:hover { background: transparent; }
+  .theme-toggle:hover, .nav__burger:hover, .menu__close:hover { background: var(--color-surface-2); }
+}
 @media (prefers-reduced-motion: reduce) {
   .theme-toggle__icon { transform: none; transition: opacity var(--dur-fast); }
+  .menu__close:active { transform: none; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
   .nav__logo:hover .logo__mark { transform: none; }
 }

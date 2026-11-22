@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { featuredProject, projectFilters, projects } from '../data/portfolio';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { useInViewPause } from '../hooks/useInViewPause';
 import { TiltCard } from '../components/motion/TiltCard';
 import { Reveal } from '../components/motion/Reveal';
 import { SectionHeading } from '../components/SectionHeading';
@@ -35,6 +36,8 @@ function ProjectCard({ project }) {
 
 export const Projects = () => {
   const reduced = usePrefersReducedMotion();
+  const sectionRef = useRef(null);
+  useInViewPause(sectionRef);
   const [filter, setFilter] = useState('All');
   const options = projectFilters.map((f) => ({ id: f, label: f }));
   const shown = projects.filter((p) => filter === 'All' || p.categories.includes(filter));
@@ -52,7 +55,7 @@ export const Projects = () => {
       };
 
   return (
-    <section id="projects" className="projects" aria-labelledby="projects-title" tabIndex={-1}>
+    <section ref={sectionRef} id="projects" className="projects" aria-labelledby="projects-title" tabIndex={-1}>
       <div className="projects__wash" aria-hidden="true" />
       <div className="container">
         <SectionHeading number="04" label="Projects" id="projects-title" title="Projects" />

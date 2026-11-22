@@ -1,5 +1,5 @@
 /* Shared layout, buttons and small utilities */
-.App { min-height: 100vh; }
+.App { min-height: 100vh; min-height: 100svh; }
 main { display: block; outline: none; }
 section[id] { position: relative; padding-block: var(--section-pad-y); outline: none; }
 
@@ -43,8 +43,9 @@ section[id] { position: relative; padding-block: var(--section-pad-y); outline: 
   align-items: center;
   justify-content: center;
   gap: 8px;
-  height: 52px;
-  padding: 0 28px;
+  min-height: 52px;
+  height: auto;
+  padding: 12px 28px;
   border-radius: var(--radius-pill);
   border: 1px solid transparent;
   font-family: var(--font-body);
@@ -56,6 +57,7 @@ section[id] { position: relative; padding-block: var(--section-pad-y); outline: 
   transition: transform var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast), background-position var(--dur-slow), border-color var(--dur-fast), background-color var(--dur-fast);
 }
 .btn:active { transform: translateY(0) scale(0.98); }
+.btn--ghost:active, .btn--solid:active { background: var(--color-surface-2); }
 .btn[aria-disabled='true'], .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn--primary {
   background: var(--gradient-brand);
@@ -63,19 +65,24 @@ section[id] { position: relative; padding-block: var(--section-pad-y); outline: 
   background-position: 0% 0;
   color: var(--color-text-on-accent);
 }
-.btn--primary:hover { box-shadow: var(--glow-accent); transform: translateY(-2px); background-position: 100% 0; }
 .btn--primary:focus-visible { box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 5px var(--focus-ring); outline: none; }
 .btn--ghost { background: transparent; border-color: var(--color-border-strong); color: var(--color-text); }
-.btn--ghost:hover { border-color: var(--color-accent); background: var(--color-surface-2); transform: translateY(-2px); }
 .btn--solid { background: var(--color-surface-2); border-color: var(--color-border-strong); color: var(--color-text); }
-.btn--solid:hover { border-color: var(--color-accent); transform: translateY(-2px); }
-.btn--text { background: none; padding: 0 8px; color: var(--color-accent-strong); }
-.btn--text:hover { text-decoration: underline; }
+.btn--text { background: none; padding: 12px 8px; min-height: 44px; color: var(--color-accent-strong); }
 @media (max-width: 480px) {
-  .btn { width: 100%; }
+  .btn { width: 100%; white-space: normal; text-align: center; line-height: 1.3; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn--primary:hover { box-shadow: var(--glow-accent); transform: translateY(-2px); background-position: 100% 0; }
+  .btn--ghost:hover { border-color: var(--color-accent); background: var(--color-surface-2); transform: translateY(-2px); }
+  .btn--solid:hover { border-color: var(--color-accent); transform: translateY(-2px); }
+  .btn--text:hover { text-decoration: underline; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .btn:hover, .btn:active { transform: none; }
+  .btn:active { transform: none; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+  .btn:hover { transform: none; }
 }
 
 /* Tags and chips */
@@ -97,7 +104,7 @@ section[id] { position: relative; padding-block: var(--section-pad-y); outline: 
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 40px;
+  height: 44px;
   padding: 0 16px;
   border-radius: var(--radius-pill);
   background: var(--color-surface-2);
@@ -108,7 +115,6 @@ section[id] { position: relative; padding-block: var(--section-pad-y); outline: 
   white-space: nowrap;
   transition: border-color var(--dur-fast), transform var(--dur-fast);
 }
-.chip:hover { border-color: var(--color-accent); transform: translateY(-1px); }
 .chip:active { transform: scale(0.97); }
 .chip__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--chip-hue, var(--color-accent)); position: relative; z-index: 1; }
 .chip__label { position: relative; z-index: 1; }
@@ -120,13 +126,20 @@ section[id] { position: relative; padding-block: var(--section-pad-y); outline: 
 }
 .chip[aria-pressed='true'] { color: var(--color-text-on-accent); border-color: transparent; background: var(--color-accent); }
 .chip[aria-pressed='true'] .chip__dot { background: var(--color-text-on-accent); }
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover { border-color: var(--color-accent); transform: translateY(-1px); }
+}
+/* Phones: one scrolling row that bleeds to the screen edges, so the cut-off chip invites a swipe.
+   The vertical padding keeps the focus ring from being clipped by the scroll container. */
 @media (max-width: 480px) {
   .chips {
     flex-wrap: nowrap;
     justify-content: flex-start;
     overflow-x: auto;
+    margin-inline: var(--bleed-x);
+    padding: 6px var(--gutter);
+    scroll-padding-inline: var(--gutter);
     scroll-snap-type: x proximity;
-    padding-bottom: 4px;
     scrollbar-width: none;
     -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
     mask-image: linear-gradient(90deg, #000 85%, transparent);
@@ -135,5 +148,8 @@ section[id] { position: relative; padding-block: var(--section-pad-y); outline: 
   .chip { flex: 0 0 auto; scroll-snap-align: start; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .chip:hover, .chip:active { transform: none; }
+  .chip:active { transform: none; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+  .chip:hover { transform: none; }
 }

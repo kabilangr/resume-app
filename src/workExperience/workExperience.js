@@ -2,12 +2,20 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { experience } from '../data/portfolio';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { useCanHover } from '../hooks/useCanHover';
 import { SectionHeading } from '../components/SectionHeading';
 import './workExperience.css';
 
+// Cards slide in from the side: 40px on the alternating desktop layout, only 24px on the
+// single-rail phone layout so the hidden state stays close to the screen edge.
+const wideTimeline = () =>
+  typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(min-width: 1024px)').matches;
+
 function TimelineItem({ job, index, reduced }) {
+  const canHover = useCanHover();
   const current = job.end === null;
-  const side = index % 2 === 0 ? -40 : 40;
+  const slide = wideTimeline() ? 40 : 24;
+  const side = index % 2 === 0 ? -slide : slide;
   const cardMotion = reduced
     ? {}
     : {
@@ -16,7 +24,7 @@ function TimelineItem({ job, index, reduced }) {
         whileInView: { opacity: 1, x: 0 },
         viewport: { once: true, amount: 0.3 },
         transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
-        whileHover: { y: -3 },
+        ...(canHover ? { whileHover: { y: -3 } } : {}),
       };
   const Card = reduced ? 'article' : motion.article;
   const nodeProps = reduced

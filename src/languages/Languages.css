@@ -8,21 +8,19 @@
 .ring__track { fill: none; stroke: var(--color-surface-2); stroke-width: 8; }
 .ring__bar { fill: none; stroke: var(--card-hue); stroke-width: 8; stroke-linecap: round; transition: stroke-width var(--dur-fast); }
 [data-theme='dark'] .ring__bar { filter: drop-shadow(0 0 6px var(--card-hue)); }
-.ring:hover .ring__bar { stroke-width: 10; }
 .ring__dial { transition: filter var(--dur-base); }
-.ring:hover .ring__dial, .ring:focus-within .ring__dial { filter: drop-shadow(0 0 10px var(--card-hue)); }
+.ring:focus-within .ring__dial { filter: drop-shadow(0 0 10px var(--card-hue)); }
 .ring__icon { position: relative; display: grid; place-items: center; color: var(--card-hue); }
 .ring__icon svg { width: 44px; height: 44px; transition: transform var(--dur-base); }
-.ring:hover .ring__icon svg, .ring:focus-within .ring__icon svg { transform: scale(1.1); }
+.ring:focus-within .ring__icon svg { transform: scale(1.1); }
 .ring__initials { font-family: var(--font-display); font-weight: var(--fw-bold); font-size: 1.5rem; }
 .ring__label { font-size: var(--fs-small); font-weight: var(--fw-medium); color: var(--color-text-muted); }
-.ring:hover .ring__label { color: var(--color-text); }
 .rings__caption { margin-top: var(--space-5); text-align: center; font-family: var(--font-body); font-weight: var(--fw-semibold); font-size: var(--fs-label); color: var(--color-text-muted); }
 
 .skills__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
 .skills__item { min-width: 0; }
 .skill-card { height: 100%; }
-.skill-card__inner { position: relative; display: grid; gap: var(--space-4); padding: 20px; align-content: start; height: 100%; overflow: hidden; border-radius: inherit; }
+.skill-card__inner { position: relative; display: grid; gap: var(--space-4); padding: var(--card-pad); align-content: start; height: 100%; overflow: hidden; border-radius: inherit; }
 .skill-card__icon {
   display: grid; place-items: center; width: 52px; height: 52px; border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--card-hue) 16%, transparent);
@@ -56,12 +54,23 @@
   pointer-events: none;
 }
 @keyframes angle { to { --angle: 360deg; } }
+@media (hover: hover) and (pointer: fine) {
+  .ring:hover .ring__bar { stroke-width: 10; }
+  .ring:hover .ring__dial { filter: drop-shadow(0 0 10px var(--card-hue)); }
+  .ring:hover .ring__icon svg { transform: scale(1.1); }
+  .ring:hover .ring__label { color: var(--color-text); }
+}
+/* Mobile animation budget: a static gradient border instead of the rotating @property angle */
+@media (hover: none), (max-width: 767.98px) {
+  .skill-card--glow::before { animation: none; background: linear-gradient(135deg, var(--ring-a), var(--ring-b)); }
+}
 
 @media (min-width: 481px) {
   .rings { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .ring__dial { width: 96px; height: 96px; }
   .skills__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .skill-card__inner { padding: 24px; }
+}
+@media (min-width: 768px) {
   .corner-art { display: block; }
 }
 @media (min-width: 1024px) {

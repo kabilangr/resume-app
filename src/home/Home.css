@@ -34,10 +34,15 @@
 .hero__mask { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; }
 .hero__word { display: inline-block; }
 
-.hero__roles { min-height: 1.5em; font-family: var(--font-body); font-weight: var(--fw-bold); font-size: clamp(1rem, 0.9rem + 1.2vw, 1.5rem); color: var(--color-accent-strong); }
+.hero__roles { min-height: 1.5em; line-height: 1.5; font-family: var(--font-body); font-weight: var(--fw-bold); font-size: clamp(1rem, 0.9rem + 1.2vw, 1.5rem); color: var(--color-accent-strong); }
 .hero__typed { display: inline-flex; flex-wrap: wrap; }
+.hero__roles-sizer { display: none; }
 .hero__roles-static { display: block; line-height: 1.5; }
-.Typewriter__cursor { color: var(--color-accent); }
+.Typewriter__cursor { display: none; }
+/* The caret is a pseudo-element, not a text node that moves with every typed letter: a moving
+   node would count as a layout shift on every keystroke. */
+.hero__typed .Typewriter__wrapper::after { content: '|'; margin-left: 1px; color: var(--color-accent); animation: caret-blink 1s steps(2) infinite; }
+@keyframes caret-blink { 50% { opacity: 0; } }
 
 .hero__current { position: relative; padding-left: 20px; color: var(--color-text-muted); font-size: var(--fs-lead); }
 .hero__current strong { color: var(--color-text); font-weight: var(--fw-semibold); }
@@ -109,7 +114,7 @@
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* Scroll cue */
-.scroll-cue { position: absolute; bottom: var(--space-6); left: 50%; transform: translateX(-50%); z-index: 3; display: none; flex-direction: column; align-items: center; text-align: center; gap: 6px; text-decoration: none; color: var(--color-text-muted); }
+.scroll-cue { position: absolute; bottom: var(--space-6); left: 50%; transform: translateX(-50%); z-index: 3; display: none; flex-direction: column; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; text-align: center; gap: 6px; text-decoration: none; color: var(--color-text-muted); }
 .scroll-cue__mouse { width: 26px; height: 42px; border-radius: 14px; border: 2px solid var(--color-border-strong); display: flex; justify-content: center; padding-top: 6px; }
 .scroll-cue__dot { width: 4px; height: 4px; border-radius: 50%; background: var(--color-accent); animation: cue 1.6s var(--ease-in-out) infinite; }
 .scroll-cue__label { padding-left: var(--tracking-label); font-family: var(--font-body); font-weight: var(--fw-bold); font-size: var(--fs-label); letter-spacing: var(--tracking-label); text-transform: uppercase; }
@@ -137,11 +142,52 @@
 }
 @media (max-width: 480px) {
   .hero__cta { flex-direction: column; }
+  /* two-line reserve so the typewriter never shifts the layout when a role wraps */
+  .hero__roles { min-height: 3em; line-height: 1.5; }
+  .hero__stat { border-radius: var(--radius-lg); padding: 10px 16px; }
+}
+/* The longest role must fit on one line, so a word never jumps to line 2 while it is typed */
+@media (max-width: 767.98px) {
+  .hero__roles { font-size: clamp(0.875rem, 0.2rem + 3.6vw, 1.5rem); }
+}
+@media (max-width: 767.98px) {
+  .hero__roles { display: grid; justify-content: center; max-width: 100%; text-align: left; }
+  .hero__roles > .hero__typed, .hero__roles > .hero__roles-sizer { grid-area: 1 / 1; min-width: 0; }
+  .hero__typed { display: block; white-space: nowrap; }
+  .hero__roles-sizer { display: block; visibility: hidden; height: 0; overflow: hidden; white-space: nowrap; max-width: 100%; }
+  .hero__current { padding-left: 0; }
+  .hero__ping { position: relative; display: inline-block; top: auto; margin-right: 8px; vertical-align: middle; }
+  .marquee { bottom: calc((100vw - 2 * var(--gutter)) * 0.3125); }
 }
 @media (min-width: 1024px) {
   .scroll-cue__label { display: block; }
 }
 @media (max-width: 1023px) { .scroll-cue__label { display: none; } }
+/* Mobile animation budget: static blobs, no blur filter */
+@media (hover: none), (max-width: 767.98px) {
+  .hero__blob { filter: none; will-change: auto; animation: none; }
+}
+/* Landscape phones: not full-height, stage sized to the screen, no scroll cue */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* section.hero: section[id] in App.css sets padding-block and would otherwise win */
+  section.hero { min-height: auto; --stage-h: clamp(220px, 70svh, 320px); padding-top: calc(var(--nav-height) + 16px); }
+  .scroll-cue { display: none; }
+  .hero__name { font-size: clamp(2.25rem, 1rem + 4vw, 3.25rem); }
+  .hero__copy { gap: var(--space-3); padding-block: var(--space-4); }
+}
+@media (orientation: landscape) and (max-height: 500px) and (min-width: 568px) {
+  .hero__main { grid-template-columns: 1.1fr 0.9fr; align-items: stretch; align-content: stretch; gap: var(--space-5); }
+  .hero__stage { align-self: end; }
+  .hero__portrait { width: min(100%, calc(var(--stage-h) * 0.8)); aspect-ratio: 4 / 5; }
+  .hero__copy { justify-items: start; text-align: left; align-self: center; }
+  .hero__social, .hero__cta { justify-content: flex-start; }
+  .hero__cta { flex-direction: row; }
+  .hero__scrim {
+    display: block; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(90deg, var(--color-bg) 0%, var(--color-bg) 40%, transparent 62%);
+  }
+  .marquee { bottom: calc(var(--stage-h) / 2); }
+}
 @media (prefers-reduced-motion: reduce) {
   .hero__blob, .marquee__row, .hero__ping::after, .scroll-cue__dot, .hero__bokeh span { animation: none !important; }
 }

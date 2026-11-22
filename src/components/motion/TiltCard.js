@@ -1,12 +1,14 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { useCanHover } from '../../hooks/useCanHover';
 import './TiltCard.css';
 
 const SPRING = { stiffness: 200, damping: 20, mass: 0.5 };
 
 export function TiltCard({ children, max = 7, className = '', style, as = 'div', ...rest }) {
   const reduced = usePrefersReducedMotion();
+  const canHover = useCanHover();
   const ref = useRef(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -50,7 +52,7 @@ export function TiltCard({ children, max = 7, className = '', style, as = 'div',
       style={{ ...style, rotateX, rotateY, transformPerspective: 900 }}
       onPointerMove={handleMove}
       onPointerLeave={handleLeave}
-      whileHover={{ y: -4 }}
+      whileHover={canHover ? { y: -4 } : undefined}
       transition={{ duration: 0.2 }}
       {...rest}
     >

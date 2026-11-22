@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { featuredProject as fp } from '../data/portfolio';
 import { ImageUtil } from '../utils/ImageUtil';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { useCanHover } from '../hooks/useCanHover';
 import { TiltCard } from '../components/motion/TiltCard';
 import { categoryIcons, ExternalIcon, LockIcon, MoonIcon } from '../components/icons';
 
@@ -45,7 +46,11 @@ function MathiPanel() {
 }
 
 function MediaGallery({ reduced }) {
+  const canHover = useCanHover();
   const [open, setOpen] = React.useState(false);
+  const [index, setIndex] = React.useState(0);
+  const rowRef = React.useRef(null);
+  const count = fp.screenshots.length;
   const [desktop, setDesktop] = React.useState(
     () => typeof window.matchMedia === 'function' && window.matchMedia('(min-width: 1024px)').matches
   );
@@ -61,34 +66,65 @@ function MediaGallery({ reduced }) {
     return undefined;
   }, []);
   // The fan only applies on desktop; below 1024px the phones sit straight in a scroll-snap row.
+  // Dots and the live text follow the scroll position of the row (below 1024).
+  React.useEffect(() => {
+    const row = rowRef.current;
+    if (!row) return undefined;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const span = Math.max(1, row.scrollWidth - row.clientWidth);
+      const next = Math.round((row.scrollLeft / span) * (count - 1));
+      setIndex(Math.max(0, Math.min(count - 1, next)));
+    };
+    const onScroll = () => {
+      if (!raf) raf = window.requestAnimationFrame(update);
+    };
+    row.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      row.removeEventListener('scroll', onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, [count]);
   const pos = !desktop ? fanFlat : open && !reduced ? fanOpen : fanRest;
   return (
-    <div
-      className="gallery"
-      role="region"
-      aria-label="Valam screenshots"
-      tabIndex={0}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
-      {fp.screenshots.map((s, i) => (
-        <motion.figure
-          key={s.id}
-          className={`gallery__phone gallery__phone--${i}`}
-          initial={false}
-          animate={pos[i]}
-          transition={{ type: 'spring', stiffness: 220, damping: 22 }}
-          style={{ '--float-delay': `${i * 0.6}s` }}
-        >
-          <img
-            src={ImageUtil.valamShots[s.id]}
-            alt={s.alt}
-            width="414"
-            height="900"
-            loading="lazy"
-          />
-        </motion.figure>
-      ))}
+    <div className="gallery-wrap">
+      <div
+        ref={rowRef}
+        className="gallery"
+        role="region"
+        aria-label="Valam screenshots"
+        tabIndex={0}
+        onMouseEnter={canHover ? () => setOpen(true) : undefined}
+        onMouseLeave={canHover ? () => setOpen(false) : undefined}
+      >
+        {fp.screenshots.map((s, i) => (
+          <motion.figure
+            key={s.id}
+            className={`gallery__phone gallery__phone--${i}`}
+            initial={false}
+            animate={pos[i]}
+            transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+            style={{ '--float-delay': `${i * 0.6}s` }}
+          >
+            <img
+              src={ImageUtil.valamShots[s.id]}
+              alt={s.alt}
+              width="414"
+              height="900"
+              loading="lazy"
+            />
+          </motion.figure>
+        ))}
+      </div>
+      <div className="gallery__dots" aria-hidden="true">
+        {fp.screenshots.map((s, i) => (
+          <span key={s.id} className={i === index ? 'is-active' : undefined} />
+        ))}
+      </div>
+      <p className="sr-only" aria-live="polite">
+        Screenshot {index + 1} of {count}
+      </p>
     </div>
   );
 }

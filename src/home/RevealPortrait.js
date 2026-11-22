@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useRef } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { profile } from '../data/portfolio';
 import { ImageUtil } from '../utils/ImageUtil';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
@@ -16,18 +16,43 @@ const R_HEAD = 90; // px
 const R_TAIL = 40; // px
 const OPEN_MS = 160;
 const CLOSE_MS = 400;
+const TAP_SLOP = 10; // px a tap may move before it counts as a drag
+const PEEK_MS = 1600; // how long a tap keeps the reveal open
+const TOUCH_QUERY = '(hover: none)';
 
-const hasHover = () =>
-  typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-    ? window.matchMedia('(hover: hover)').matches
-    : true;
+const matches = (q) =>
+  typeof window !== 'undefined' && typeof window.matchMedia === 'function' ? !!window.matchMedia(q).matches : false;
+const saveData = () => typeof navigator !== 'undefined' && !!(navigator.connection && navigator.connection.saveData);
+
+// Smallest robot file that covers the scene box at the device pixel ratio, otherwise the largest.
+const pickRobot = (set, sceneWidth) => {
+  const need = sceneWidth * (window.devicePixelRatio || 1);
+  const hit = set.find((f) => f.w >= need);
+  return (hit || set[set.length - 1]).url;
+};
+
+function useTouchCopy() {
+  const [touch, setTouch] = useState(() => matches(TOUCH_QUERY));
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return undefined;
+    const mql = window.matchMedia(TOUCH_QUERY);
+    const on = () => setTouch(!!mql.matches);
+    on();
+    if (mql.addEventListener) {
+      mql.addEventListener('change', on);
+      return () => mql.removeEventListener('change', on);
+    }
+    return undefined;
+  }, []);
+  return touch;
+}
 
 // Gooey trail reveal. Circles live in an SVG <mask> that runs through a goo filter
 // (blur + alpha threshold), so they merge into one liquid blob. Everything is
 // driven from requestAnimationFrame and written to the circles through refs, never
 // through React state.
 export function RevealPortrait({ portrait = profile.portrait }) {
-  const { cartoon, robot } = portrait || {};
+  const { cartoon, robot, cartoonSrcSet, robotSet, sizes } = portrait || {};
   const scene = !!cartoon;
   const { w: W, h: H } = scene ? SCENE : PHOTO;
   const uid = useId().replace(/:/g, '');
@@ -36,6 +61,17 @@ export function RevealPortrait({ portrait = profile.portrait }) {
   const stageRef = useRef(null);
   const dotRefs = useRef([]);
   const ringRef = useRef(null);
+  const touchCopy = useTouchCopy();
+  const [robotHref, setRobotHref] = useState(null); // the robot layer loads lazily (see loadRobot)
+  const [robotReady, setRobotReady] = useState(false);
+  const [inView, setInView] = useState(false);
+  const [pageVisible, setPageVisible] = useState(
+    () => typeof document === 'undefined' || document.visibilityState !== 'hidden'
+  );
+  const [interacted, setInteracted] = useState(false);
+  const [peek, setPeek] = useState(false);
+  const peekTimer = useRef(0);
+  const downAt = useRef(null);
   const sim = useRef({
     pts: Array.from({ length: N }, () => ({ x: W / 2, y: H / 2 })),
     tx: W / 2,
@@ -81,8 +117,10 @@ export function RevealPortrait({ portrait = profile.portrait }) {
       st.last = now;
 
       // open / close tween, linear in time
-      if (st.open < st.want) st.open = Math.min(st.want, st.open + dt / OPEN_MS);
-      else if (st.open > st.want) st.open = Math.max(st.want, st.open - dt / CLOSE_MS);
+      const openMs = reduced ? 1 : OPEN_MS; // reduced motion: open and close at once
+      const closeMs = reduced ? 1 : CLOSE_MS;
+      if (st.open < st.want) st.open = Math.min(st.want, st.open + dt / openMs);
+      else if (st.open > st.want) st.open = Math.max(st.want, st.open - dt / closeMs);
 
       let moving = st.open !== st.want;
       const lead = st.pts[0];
@@ -108,7 +146,7 @@ export function RevealPortrait({ portrait = profile.portrait }) {
       if (moving) st.raf = window.requestAnimationFrame(tick);
       else st.last = 0;
     },
-    [render]
+    [render, reduced]
   );
 
   const kick = useCallback(() => {
@@ -137,19 +175,42 @@ export function RevealPortrait({ portrait = profile.portrait }) {
     kick();
   };
 
-  const onEnter = (e) => {
-    if (e.pointerType === 'touch') return;
+  // The robot image has no href until it is needed: the first pointer contact, or an idle moment
+  // after load (never with Save-Data).
+  const loadRobot = useCallback(() => {
+    if (!robot) return;
+    setRobotHref((cur) => {
+      if (cur) return cur;
+      if (!robotSet || !robotSet.length) return robot;
+      const w = stageRef.current ? stageRef.current.clientWidth : 0;
+      return pickRobot(robotSet, w);
+    });
+  }, [robot, robotSet]);
+
+  const clearPeek = () => {
+    window.clearTimeout(peekTimer.current);
+    peekTimer.current = 0;
+    setPeek(false);
+  };
+
+  const openAt = (clientX, clientY) => {
     const st = sim.current;
     st.active = true;
     st.want = 1;
-    // start the trail at the entry point so it does not streak in from the centre
-    const [x, y] = toUnits(e.clientX, e.clientY);
+    const [x, y] = toUnits(clientX, clientY);
     st.pts.forEach((p) => {
       p.x = x;
       p.y = y;
     });
     st.init = true;
-    aim(e.clientX, e.clientY);
+    aim(clientX, clientY);
+  };
+
+  const onEnter = (e) => {
+    loadRobot();
+    if (e.pointerType === 'touch') return;
+    setInteracted(true);
+    openAt(e.clientX, e.clientY);
   };
   const onMove = (e) => {
     const st = sim.current;
@@ -160,29 +221,102 @@ export function RevealPortrait({ portrait = profile.portrait }) {
     }
     aim(e.clientX, e.clientY);
   };
-  const onDown = (e) => {
-    if (e.pointerType !== 'touch') return;
-    const st = sim.current;
-    st.active = true;
-    st.want = 1;
-    const [x, y] = toUnits(e.clientX, e.clientY);
-    st.pts.forEach((p) => {
-      p.x = x;
-      p.y = y;
-    });
-    st.init = true;
-    aim(e.clientX, e.clientY);
-  };
   const close = () => {
     const st = sim.current;
     st.active = false;
     st.want = 0;
     kick();
   };
+  // Touch and pen: press opens the reveal under the finger, a drag moves it, release closes it.
+  // A tap (moved less than TAP_SLOP) keeps it open for PEEK_MS so it can be seen.
+  const onDown = (e) => {
+    loadRobot();
+    if (e.pointerType === 'mouse') return;
+    setInteracted(true);
+    downAt.current = { x: e.clientX, y: e.clientY };
+    clearPeek();
+    openAt(e.clientX, e.clientY);
+  };
+  const onUp = (e) => {
+    if (e.pointerType === 'mouse') return;
+    const d = downAt.current;
+    downAt.current = null;
+    const tap = d && Math.hypot(e.clientX - d.x, e.clientY - d.y) < TAP_SLOP;
+    if (!tap) {
+      close();
+      return;
+    }
+    aim(d.x, d.y);
+    setPeek(true);
+    window.clearTimeout(peekTimer.current);
+    peekTimer.current = window.setTimeout(() => {
+      peekTimer.current = 0;
+      setPeek(false);
+      close();
+    }, PEEK_MS);
+  };
+  const onCancel = (e) => {
+    if (e.pointerType === 'mouse') return;
+    downAt.current = null;
+    clearPeek();
+    close();
+  };
 
-  // Gentle auto-wander when there is no hover (touch), unless motion is reduced.
+  // Idle preload of the robot layer, unless the user asked to save data.
   useEffect(() => {
-    if (reduced || hasHover()) return undefined;
+    if (!robot || saveData()) return undefined;
+    let cancelled = false;
+    let handle = 0;
+    let usedIdle = false;
+    const run = () => {
+      if (!cancelled) loadRobot();
+    };
+    const schedule = () => {
+      if (typeof window.requestIdleCallback === 'function') {
+        usedIdle = true;
+        handle = window.requestIdleCallback(run, { timeout: 5000 });
+      } else {
+        handle = window.setTimeout(run, 3000);
+      }
+    };
+    const onLoad = () => schedule();
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', onLoad, { once: true });
+    return () => {
+      cancelled = true;
+      window.removeEventListener('load', onLoad);
+      if (usedIdle) window.cancelIdleCallback(handle);
+      else window.clearTimeout(handle);
+    };
+  }, [robot, loadRobot]);
+
+  // Visibility inputs for the auto-wander.
+  useEffect(() => {
+    const el = frameRef.current;
+    if (!el || typeof window.IntersectionObserver !== 'function') return undefined;
+    const io = new window.IntersectionObserver(
+      (entries) => {
+        const last = entries[entries.length - 1];
+        if (last) setInView(!!last.isIntersecting && last.intersectionRatio >= 0.1);
+      },
+      { threshold: [0, 0.1, 0.5] }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  useEffect(() => {
+    const on = () => setPageVisible(document.visibilityState !== 'hidden');
+    document.addEventListener('visibilitychange', on);
+    return () => document.removeEventListener('visibilitychange', on);
+  }, []);
+
+  // Gentle auto-wander on touch devices. It runs only while the hero is at least 10% visible, the tab
+  // is visible, nobody has touched the card yet, Save-Data is off, and the robot layer has loaded.
+  const robotNeedsLoad = !!robot;
+  const wanderOn =
+    touchCopy && !reduced && inView && pageVisible && !interacted && !saveData() && (!robotNeedsLoad || robotReady);
+  useEffect(() => {
+    if (!wanderOn) return undefined;
     const st = sim.current;
     const step = () => {
       if (st.active) return;
@@ -204,13 +338,18 @@ export function RevealPortrait({ portrait = profile.portrait }) {
     return () => {
       window.clearTimeout(first);
       window.clearInterval(id);
+      if (!st.active) {
+        st.want = 0;
+        kick();
+      }
     };
-  }, [reduced, kick, scene, W, H]);
+  }, [wanderOn, kick, scene, W, H]);
 
   useEffect(() => {
     const st = sim.current;
     return () => {
       if (st.raf) window.cancelAnimationFrame(st.raf);
+      window.clearTimeout(peekTimer.current);
     };
   }, []);
 
@@ -226,18 +365,21 @@ export function RevealPortrait({ portrait = profile.portrait }) {
         ref={frameRef}
         className={`reveal${scene ? ' reveal--scene' : ' reveal--photo'}${reduced ? ' reveal--still' : ''}`}
         data-testid="reveal-frame"
+        data-peek={peek ? 'true' : undefined}
+        data-wander={wanderOn ? 'on' : 'off'}
         onPointerEnter={onEnter}
         onPointerMove={onMove}
         onPointerLeave={close}
         onPointerDown={onDown}
-        onPointerUp={(e) => e.pointerType === 'touch' && close()}
-        onPointerCancel={(e) => e.pointerType === 'touch' && close()}
+        onPointerUp={onUp}
+        onPointerCancel={onCancel}
       >
         {/* Base image: real <img> so the alt text is in the accessibility tree. */}
         <div ref={stageRef} className="reveal__stage">
         <img
             className="reveal__base"
             src={baseSrc}
+            {...(scene && cartoonSrcSet ? { srcSet: cartoonSrcSet, sizes } : {})}
             alt={profile.portraitAlt}
             width={W}
             height={H}
@@ -294,7 +436,15 @@ export function RevealPortrait({ portrait = profile.portrait }) {
 
           <g mask={`url(#${maskId})`}>
             {robot ? (
-              <image href={robot} x="0" y="0" width={W} height={H} preserveAspectRatio="xMidYMid slice" />
+              <image
+                {...(robotHref ? { href: robotHref } : {})}
+                x="0"
+                y="0"
+                width={W}
+                height={H}
+                preserveAspectRatio="xMidYMid slice"
+                onLoad={() => setRobotReady(true)}
+              />
             ) : (
               <g className="reveal__bot">
                 <image
@@ -335,11 +485,9 @@ export function RevealPortrait({ portrait = profile.portrait }) {
         </svg>
         </div>
       </div>
-      {!reduced && (
-        <span className="reveal__hint" aria-hidden="true">
-          Hover to meet my robot twin
-        </span>
-      )}
+      <span className="reveal__hint" aria-hidden="true">
+        {touchCopy ? 'Tap or drag to meet my robot twin' : 'Hover to meet my robot twin'}
+      </span>
     </>
   );
 }

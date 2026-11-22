@@ -118,7 +118,7 @@ describe('hero marquee', () => {
     renderApp();
     const marquee = document.querySelector('.marquee');
     expect(marquee).toHaveAttribute('aria-hidden', 'true');
-    expect(marquee.textContent).toMatch(/build · ship · tinker · orchestrate ·/);
+    expect(marquee.textContent).toMatch(/build · ship · architect · orchestrate ·/);
     expect(screen.getByRole('heading', { level: 1, name: /Kabilan GR/ })).toBeInTheDocument();
   });
 });
@@ -219,6 +219,111 @@ describe('navigation', () => {
     await waitFor(() =>
       expect(screen.getByRole('button', { name: 'Open menu' })).toHaveAttribute('aria-expanded', 'false')
     );
+  });
+});
+
+describe('modal mobile menu', () => {
+  const INERT = ['.nav__bar', '#main', 'footer', '.skip-link'];
+  const openMenu = () => {
+    renderApp();
+    click(screen.getByRole('button', { name: 'Open menu' }));
+    return screen.getByRole('dialog', { name: 'Site menu' });
+  };
+
+  test('has a visible Close button and a theme toggle, and inerts the page', () => {
+    const dialog = openMenu();
+    expect(within(dialog).getByRole('button', { name: 'Close' })).toBeInTheDocument();
+    expect(within(dialog).getByRole('button', { name: 'Toggle theme' })).toBeInTheDocument();
+    INERT.forEach((sel) => expect(document.querySelector(sel)).toHaveAttribute('inert'));
+  });
+
+  test('Close removes inert, unlocks scroll and returns focus to the burger', async () => {
+    const dialog = openMenu();
+    expect(document.documentElement.style.overflow).toBe('hidden');
+    expect(document.body.style.overflow).toBe('hidden');
+    click(within(dialog).getByRole('button', { name: 'Close' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    INERT.forEach((sel) => expect(document.querySelector(sel)).not.toHaveAttribute('inert'));
+    expect(document.documentElement.style.overflow).toBe('');
+    expect(document.body.style.overflow).toBe('');
+    expect(screen.getByRole('button', { name: 'Open menu' })).toHaveFocus();
+  });
+
+  test('Esc returns focus to the burger', async () => {
+    openMenu();
+    fireEvent.keyDown(document.body, { key: 'Escape' });
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Open menu' })).toHaveFocus());
+    INERT.forEach((sel) => expect(document.querySelector(sel)).not.toHaveAttribute('inert'));
+  });
+
+  test('focus starts on Close and Tab wraps through the whole panel', () => {
+    const dialog = openMenu();
+    const close = within(dialog).getByRole('button', { name: 'Close' });
+    const toggle = within(dialog).getByRole('button', { name: 'Toggle theme' });
+    expect(close).toHaveFocus();
+    toggle.focus();
+    fireEvent.keyDown(toggle, { key: 'Tab' });
+    expect(close).toHaveFocus();
+    fireEvent.keyDown(close, { key: 'Tab', shiftKey: true });
+    expect(toggle).toHaveFocus();
+  });
+
+  test('a menu link closes the menu and focuses the section', async () => {
+    const dialog = openMenu();
+    click(within(dialog).getByRole('link', { name: /Projects/ }));
+    await waitFor(() => expect(document.activeElement).toBe(document.getElementById('projects')));
+    INERT.forEach((sel) => expect(document.querySelector(sel)).not.toHaveAttribute('inert'));
+  });
+
+  test('the nav switches at 1024 and the menu CSS holds the literal values', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const css = fs.readFileSync(path.join(__dirname, 'navigation', 'Navigation.css'), 'utf8');
+    const js = fs.readFileSync(path.join(__dirname, 'navigation', 'Navigation.js'), 'utf8');
+    expect(css).toContain('min-width: 1024px');
+    expect(css).not.toContain('min-width: 768px');
+    expect(css).toContain('overscroll-behavior: contain');
+    expect(css).toContain('clamp(2rem, 1.25rem + 4vw, 3rem)');
+    expect(css).toContain('env(safe-area-inset-bottom, 0px)');
+    expect(js).toContain('1024');
+  });
+});
+
+describe('gallery and hover gating', () => {
+  test('gallery dots are aria-hidden and a live region reports the screenshot', () => {
+    renderApp();
+    const wrap = document.querySelector('.gallery-wrap');
+    expect(wrap.querySelector('.gallery')).toHaveAttribute('role', 'region');
+    const dots = wrap.querySelector('.gallery__dots');
+    expect(dots).toHaveAttribute('aria-hidden', 'true');
+    expect(dots.children).toHaveLength(3);
+    expect(wrap.querySelector('[aria-live="polite"]')).toHaveTextContent('Screenshot 1 of 3');
+  });
+
+  test('every whileHover is gated by canHover and the hook exists', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const { execSync } = require('child_process');
+    expect(fs.existsSync(path.join(__dirname, 'hooks', 'useCanHover.js'))).toBe(true);
+    const out = execSync('grep -rn "whileHover" src || true', { cwd: path.join(__dirname, '..') }).toString();
+    out
+      .split('\n')
+      .filter((l) => l && !l.includes('.test.js') && !l.includes('useCanHover.js'))
+      .forEach((l) => expect(l).toMatch(/canHover/));
+  });
+
+  test('buttons wrap instead of clipping, chips are 44px, 100svh and clip are set', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const app = fs.readFileSync(path.join(__dirname, 'App.css'), 'utf8');
+    const idx = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf8');
+    expect(app).toMatch(/min-height: 52px/);
+    expect(app).not.toMatch(/(^|[^-])height: 52px/m);
+    expect(app).toMatch(/\.chip \{[^}]*height: 44px/);
+    expect(app).toContain('min-height: 100svh');
+    expect(idx).toContain('overflow-x: clip');
+    expect(idx).not.toContain('overflow-x: hidden');
+    expect(idx).toContain('[data-paused] * { animation-play-state: paused; }');
   });
 });
 
@@ -407,7 +512,7 @@ describe('reduced motion', () => {
     global.__setMatchMedia({ [REDUCED]: true });
     renderApp();
     expect(document.querySelector('.Typewriter')).toBeNull();
-    expect(screen.getByText(/Lead Full-Stack Developer · React & React Native Engineer/)).toBeInTheDocument();
+    expect(screen.getByText(/Lead Full-Stack Developer · Software Architect · Flutter Developer · React & React Native Engineer/)).toBeInTheDocument();
     ['hero', 'about', 'skills', 'experience', 'projects', 'contact'].forEach((id) => {
       const el = document.getElementById(id);
       expect(el.getAttribute('style') || '').not.toMatch(/opacity:\s*0(?![.\d])/);
@@ -415,6 +520,19 @@ describe('reduced motion', () => {
         expect(n.getAttribute('style')).not.toMatch(/opacity:\s*0(?![.\d])/);
       });
     });
+  });
+
+  test('the roles list has the architect, Flutter and product roles and drops the old beginner-sounding IoT role', () => {
+    const { profile } = require('./data/portfolio');
+    ['Software Architect', 'Flutter Developer', 'Product Owner', 'Product Developer', 'IoT & Embedded Systems Engineer'].forEach((r) =>
+      expect(profile.roles).toContain(r)
+    );
+    expect(profile.roles[0]).toBe('Lead Full-Stack Developer');
+    const fs = require('fs');
+    const path = require('path');
+    const html = fs.readFileSync(path.join(__dirname, '..', 'public', 'index.html'), 'utf8');
+    expect(JSON.stringify(profile) + html + document.body.textContent).not.toMatch(new RegExp('IoT ' + 'Tink' + 'erer', 'i'));
+    expect(profile.summary).toContain('6+');
   });
 
   test('renders the typewriter when motion is allowed', () => {

@@ -7,6 +7,33 @@ import { ThemeToggle } from './ThemeToggle';
 import { MobileMenu } from './MobileMenu';
 import './Navigation.css';
 
+// While the menu is open the page behind it is inert. React 18.2 has no `inert` prop, so the
+// attribute is written by hand. Both helpers are idempotent and are also called straight from the
+// close handlers: `inert` must be gone before focus moves, or the focus call is ignored.
+const INERT_TARGETS = ['.nav__bar', '#main', 'footer', '.skip-link'];
+const setInert = (on) => {
+  INERT_TARGETS.forEach((sel) => {
+    document.querySelectorAll(sel).forEach((el) => {
+      if (on) el.setAttribute('inert', '');
+      else el.removeAttribute('inert');
+    });
+  });
+};
+const lockScroll = (on) => {
+  const v = on ? 'hidden' : '';
+  document.documentElement.style.overflow = v;
+  document.body.style.overflow = v;
+};
+const releasePage = () => {
+  setInert(false);
+  lockScroll(false);
+};
+
+const focusTarget = (id) => {
+  const el = document.getElementById(id);
+  if (el) el.focus({ preventScroll: true });
+};
+
 const Navigation = () => {
   const reduced = usePrefersReducedMotion();
   const [open, setOpen] = useState(false);
@@ -14,9 +41,18 @@ const Navigation = () => {
   const [activeId, setActiveId] = useState(null);
   const burgerRef = useRef(null);
 
+  // Close button, Esc, burger and resize: release the page first, then (optionally) focus the burger.
   const closeMenu = useCallback((returnFocus) => {
+    releasePage();
     setOpen(false);
     if (returnFocus === true && burgerRef.current) burgerRef.current.focus();
+  }, []);
+
+  // Menu link: release the page, then move focus to the section, not the burger.
+  const navigateFromMenu = useCallback((id) => {
+    releasePage();
+    setOpen(false);
+    focusTarget(id);
   }, []);
 
   // sticky bar style
@@ -45,29 +81,25 @@ const Navigation = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Esc, resize and scroll lock
+  // Esc, resize past the desktop breakpoint, inert page and scroll lock
   useEffect(() => {
     if (!open) return undefined;
     const onKey = (e) => {
       if (e.key === 'Escape') closeMenu(true);
     };
     const onResize = () => {
-      if (window.innerWidth >= 768) closeMenu(false);
+      if (window.innerWidth >= 1024) closeMenu(false);
     };
     document.addEventListener('keydown', onKey);
     window.addEventListener('resize', onResize);
-    document.body.style.overflow = 'hidden';
+    setInert(true);
+    lockScroll(true);
     return () => {
       document.removeEventListener('keydown', onKey);
       window.removeEventListener('resize', onResize);
-      document.body.style.overflow = '';
+      releasePage();
     };
   }, [open, closeMenu]);
-
-  const focusTarget = (id) => {
-    const el = document.getElementById(id);
-    if (el) el.focus({ preventScroll: true });
-  };
 
   return (
     <header className="nav" data-scrolled={scrolled ? 'true' : 'false'}>
@@ -109,7 +141,7 @@ const Navigation = () => {
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
             aria-controls="mobile-menu"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => (open ? closeMenu(true) : setOpen(true))}
           >
             <span />
             <span />
@@ -117,7 +149,7 @@ const Navigation = () => {
           </button>
         </div>
       </div>
-      <MobileMenu open={open} onClose={closeMenu} activeId={activeId} />
+      <MobileMenu open={open} onClose={closeMenu} onNavigate={navigateFromMenu} activeId={activeId} />
     </header>
   );
 };

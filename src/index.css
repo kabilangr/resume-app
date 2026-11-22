@@ -174,7 +174,7 @@
   --fs-h1:      clamp(2.25rem, 1.4rem + 3.6vw, 4rem);
   --fs-h2:      clamp(1.75rem, 1.3rem + 2vw, 3rem);       /* section titles */
   --fs-h3:      clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
-  --fs-h4:      1.125rem;
+  --fs-h4:      clamp(1.125rem, 1.07rem + 0.25vw, 1.25rem);   /* 18 @320-414, 19 @768, 20 @1024+ */
   --fs-lead:    clamp(1.0625rem, 1rem + 0.35vw, 1.3125rem);
   --fs-body:    1rem;                                      /* 16px, never below */
   --fs-small:   0.875rem;                                  /* 14px */
@@ -223,11 +223,55 @@
   --ease-spring-ish: cubic-bezier(0.34, 1.4, 0.64, 1);
   --ease-bounce:   cubic-bezier(0.34, 1.4, 0.64, 1);  /* same curve, friendlier name for buttons and logo */
 
-  /* ---- Breakpoints (documentation; use literals in @media) ---- unchanged */
+  /* ---- Breakpoints (documentation; use literals in @media) ---- */
   --bp-mobile: 480px;   /* @media (max-width: 480px) */
-  --bp-tablet: 768px;   /* nav collapses below 768px, i.e. max-width: 767.98px */
-  --bp-laptop: 1024px;  /* @media (min-width: 1024px) */
+  --bp-tablet: 768px;   /* nav collapses below 1024px (burger); 768 is the two-column hero and grids */
+  --bp-laptop: 1024px;  /* @media (min-width: 1024px): desktop nav, 3 columns, gallery fan */
   --bp-desktop:1280px;  /* @media (min-width: 1280px) */
+}
+
+/* ---- Responsive tokens (mobile responsive v3). They define no colours. ----
+   Breakpoints (comments only; CRA does not process @custom-media, so repeat the literals in @media):
+   320      design floor and WCAG 1.4.10 reflow target (the same as 1280 at 400 percent zoom)
+   360      common Android width; the fluid values below are tuned here
+   375-430  iPhone widths; no layout change from 360
+   480      @media (max-width: 480px)       phone: full-width buttons, scrolling chip rows, 3em role reserve, 1-col cards
+   568      @media (min-width: 568px)       used ONLY inside the landscape-two-col query
+   768      @media (min-width: 768px)       tablet: two-column hero, 2-col grids, 4 stats in a row
+   1024     @media (min-width: 1024px)      laptop: desktop nav (burger below), 3 columns, gallery fan, alternating timeline
+   1280     @media (min-width: 1280px)      caps only (container 1200, display type at its max)
+   landscape-compact   (orientation: landscape) and (max-height: 500px)
+   landscape-two-col   (orientation: landscape) and (max-height: 500px) and (min-width: 568px)
+   hover-device        (hover: hover) and (pointer: fine)      every :hover rule lives inside this
+   touch-device        (hover: none)
+   mobile-budget       (hover: none), (max-width: 767.98px)    animation budget
+*/
+:root {
+  --fs-menu:       clamp(2rem, 1.25rem + 4vw, 3rem);             /* menu links: 45 @320, 46 @360, 48 @414+ */
+  --fs-hero-name-land: clamp(2.25rem, 1rem + 4vw, 3.25rem);      /* landscape compact only: 36 to 52 */
+
+  --space-fluid-1: clamp(0.75rem, 0.6rem + 0.6vw, 1rem);
+  --space-fluid-2: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+  --space-fluid-3: clamp(1.5rem, 1.1rem + 2vw, 3rem);
+  --space-fluid-4: clamp(2rem, 1.2rem + 3vw, 4rem);
+  --card-pad:      clamp(1.25rem, 1rem + 1.2vw, 1.5rem);         /* all cards: 20 @320-414, 24 @768+ */
+  --panel-pad:     clamp(1.25rem, 0.5rem + 4.2vw, 4.5rem);       /* contact panel: 21 @320, 40 @768, 62 @1280 */
+  --section-pad-y-phone: clamp(3.5rem, 2.5rem + 4vw, 4.5rem);    /* 56 @320-360, 59 @480 */
+
+  --bleed-x:       calc(-1 * var(--gutter));                     /* negative margin for edge-to-edge scrollers */
+
+  --tap-min:       44px;
+  --tap-comfort:   48px;
+  --tap-gap:       8px;
+  --btn-min-h:     52px;
+
+  --stage-h-land:  clamp(220px, 70svh, 320px);                   /* landscape compact: 262 @375, 273 @390 */
+}
+@media (max-width: 480px) {
+  :root { --section-pad-y: var(--section-pad-y-phone); }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  :root { --section-pad-y: clamp(3rem, 2rem + 4vw, 4.5rem); }    /* 3rem floor so landscape phones do not scroll through empty bands */
 }
 
 /* Display type and the SOFT axis */
@@ -251,6 +295,17 @@ body::before {
   opacity: var(--grain-opacity);
 }
 
+/* Page ambient: its own fixed layer, below the grain. Replaces background-attachment on the body,
+   which forces a repaint on every scroll frame on mobile. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image: var(--ambient);
+}
+
 /* Reduced motion: collapse all CSS motion tokens. JS-driven motion is handled
    by usePrefersReducedMotion (see section 8). */
 @media (prefers-reduced-motion: reduce) {
@@ -267,18 +322,22 @@ body::before {
 
 /* ---- Global base rules ---- */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-height) + 16px); }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-height) + 16px);
+  -webkit-text-size-adjust: 100%;   /* stop iOS inflating text after rotation */
+  text-size-adjust: 100%;
+  overflow-x: clip;                 /* overflow guard; .hero and .projects keep their own clip */
+}
 body {
   margin: 0;
   background-color: var(--color-bg);
-  background-image: var(--ambient);
-  background-attachment: fixed;
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   transition: background-color var(--dur-base), color var(--dur-base);
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 h1, h2, h3, h4 {
@@ -295,6 +354,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 :focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; border-radius: inherit; }
 :focus:not(:focus-visible) { outline: none; }
 a { color: var(--color-accent-strong); text-underline-offset: 0.2em; }
+a, button, [role="button"], .chip, .btn { touch-action: manipulation; }   /* no tap delay or double-tap zoom; pinch zoom still works */
+[data-paused] * { animation-play-state: paused; }   /* sections that are off-screen stop their loops */
 img { max-width: 100%; height: auto; display: block; }
 button { font: inherit; color: inherit; cursor: pointer; }
 ::selection { background: var(--color-accent); color: var(--color-text-on-accent); }

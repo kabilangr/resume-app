@@ -1,6 +1,9 @@
 // Single source of truth for all portfolio content.
-import cartoon from '../assets/portrait/portrait-cartoon.jpg';
-import robot from '../assets/portrait/portrait-robot.jpg';
+// Hero images are WebP files in public/img/hero (four widths each), generated from the 16:9 scene
+// JPGs in src/assets/portrait/ without cropping, so the reveal mask stays aligned.
+const P = process.env.PUBLIC_URL || '';
+const HERO_WIDTHS = [640, 960, 1280, 1600];
+const heroUrl = (kind, w) => `${P}/img/hero/portrait-${kind}-${w}.webp`;
 
 export const profile = {
   name: 'Kabilan GR',
@@ -11,20 +14,31 @@ export const profile = {
   resumePath: '/Kabilan_GR_Resume.pdf',
   roles: [
     'Lead Full-Stack Developer',
+    'Software Architect',
+    'Flutter Developer',
     'React & React Native Engineer',
     'AI Agent Orchestrator',
-    'IoT Tinkerer',
+    'IoT & Embedded Systems Engineer',
+    'Product Owner',
+    'Product Developer',
   ],
   summary:
-    'Lead Full-Stack Developer with 6+ years of experience building web, mobile and desktop products with React, React Native, Node.js and Java. I lead teams, own architecture and technical decisions, and ship across Web, Android, iOS and Desktop.',
+    'Lead Full-Stack Developer with 6+ years of experience building web, mobile and desktop products with React, React Native, Node.js and Java. I lead teams, own architecture and product decisions as a software architect and product owner, and ship across Web, Android, iOS and Desktop.',
   summaryMore:
-    'Beyond day-to-day product work I build with AI-assisted development, orchestrate multi-agent and multi-model LLM workflows, and tinker with hardware and IoT on ESP32, Arduino and Raspberry Pi.',
+    'Beyond day-to-day product work I build with AI-assisted development, orchestrate multi-agent and multi-model LLM workflows, and design IoT and embedded systems on ESP32, Arduino and Raspberry Pi.',
   portraitAlt: 'Pixar-style illustration of Kabilan GR smiling at a wooden café table under fairy lights',
-  // Hero reveal portrait: two aligned full-scene 16:9 JPGs (same wall, masks and
-  // plant; only the person and the robot differ) in src/assets/portrait/. They are
+  // Hero reveal portrait: two aligned full-scene 16:9 images (same wall, masks and
+  // plant; only the person and the robot differ). They are
   // shown in a framed card and cropped with object-fit: cover. If either is null the
   // hero falls back to kabilan-portrait.jpg and a CSS/SVG robotic layer.
-  portrait: { cartoon, robot },
+  portrait: {
+    cartoon: heroUrl('cartoon', 1280),
+    robot: heroUrl('robot', 1280),
+    // Must stay byte-identical to the preload in public/index.html (after %PUBLIC_URL% is replaced).
+    cartoonSrcSet: HERO_WIDTHS.map((w) => `${heroUrl('cartoon', w)} ${w}w`).join(', '),
+    robotSet: HERO_WIDTHS.map((w) => ({ w, url: heroUrl('robot', w) })),
+    sizes: '(min-width: 1024px) 1350px, (min-width: 768px) 1000px, 112vw',
+  },
   contactLead:
     'Full-stack web and mobile, AI agent orchestration and IoT. The quickest way to reach me is LinkedIn.',
   heroStat: 'years building for Web, Android, iOS and Desktop',

@@ -12,10 +12,9 @@
 .project-card .tilt-card__content { display: flex; flex-direction: column; }
 .project-card__cover { overflow: hidden; border-radius: var(--radius-md); margin: 12px 12px 0; aspect-ratio: 16 / 9; color: var(--color-text); }
 .cover-svg { width: 100%; height: 100%; display: block; transition: transform 500ms; }
-.project-card:hover .cover-svg { transform: scale(1.05); }
 .cover-dot { animation: cover-blink 1.2s steps(2) infinite; }
 @keyframes cover-blink { 50% { opacity: 0.2; } }
-.project-card__body { display: grid; gap: var(--space-3); padding: 20px; align-content: start; flex: 1; }
+.project-card__body { display: grid; gap: var(--space-3); padding: var(--card-pad); align-content: start; flex: 1; }
 .project-card__cat { font-family: var(--font-body); font-weight: var(--fw-bold); font-size: var(--fs-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-text-muted); }
 .project-card__body h3 { font-size: 20px; font-weight: var(--fw-semibold); line-height: 1.25; }
 .project-card__desc { color: var(--color-text-muted); font-size: 15px; }
@@ -28,12 +27,12 @@
   box-shadow: var(--shadow-lg);
   overflow: hidden;
 }
-.featured__card.tilt-card:hover, .featured__card.tilt-card:focus-within { box-shadow: var(--glow-violet); }
+.featured__card.tilt-card:focus-within { box-shadow: var(--glow-violet); }
 .featured__glow { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: inherit; }
 .featured__glow::before, .featured__glow::after { content: ''; position: absolute; width: 60%; height: 60%; filter: blur(40px); }
 .featured__glow::before { top: -15%; right: -10%; background: var(--blob-b); }
 .featured__glow::after { bottom: -20%; left: -10%; background: var(--blob-c); }
-.featured__body { position: relative; display: grid; gap: var(--space-4); padding: 20px; grid-template-columns: minmax(0, 1fr); }
+.featured__body { position: relative; display: grid; gap: var(--space-4); padding: var(--card-pad); grid-template-columns: minmax(0, 1fr); }
 .featured__body > * { min-width: 0; }
 .featured__header { display: flex; gap: var(--space-4); align-items: center; }
 .featured__icon { width: 72px; height: 72px; border-radius: 18px; box-shadow: var(--shadow-md); flex: none; }
@@ -53,7 +52,7 @@
 
 .mathi {
   position: relative; overflow: hidden; display: grid; gap: var(--space-3);
-  padding: 20px; border-radius: var(--radius-md); background: var(--color-surface-2);
+  padding: var(--card-pad); border-radius: var(--radius-md); background: var(--color-surface-2);
   border: 1px solid var(--color-border); border-left: 3px solid var(--color-accent-2);
 }
 .mathi__moon { position: absolute; right: 8px; top: 8px; opacity: 0.12; color: var(--color-accent-3); animation: moon-glow 6s ease-in-out infinite alternate; pointer-events: none; }
@@ -68,10 +67,14 @@
 }
 .mathi__num { color: var(--color-accent-2); font-weight: var(--fw-medium); }
 
-/* Gallery: scroll-snap row on small screens, fan on desktop */
-.gallery { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 4px 12px; }
+/* Gallery: scroll-snap row on small screens (with dots), fan on desktop */
+.gallery-wrap { min-width: 0; }
+.gallery { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 4px; padding: 4px 4px 12px; }
+.gallery__dots { display: flex; justify-content: center; align-items: center; gap: 8px; padding-top: 4px; }
+.gallery__dots span { width: 8px; height: 8px; border-radius: 4px; background: var(--color-border-strong); transition: width var(--dur-fast) var(--ease-out), background-color var(--dur-fast); }
+.gallery__dots span.is-active { width: 20px; background: var(--color-accent); }
 .gallery__phone {
-  flex: 0 0 68%; max-width: 260px; margin: 0; scroll-snap-align: center;
+  flex: 0 0 min(68%, 260px); margin: 0; scroll-snap-align: center;
   border: 6px solid var(--phone-bezel); border-radius: 28px; overflow: hidden; box-shadow: var(--shadow-lg);
   aspect-ratio: 9 / 19.5; background: var(--phone-bezel);
 }
@@ -87,20 +90,36 @@
   .projects__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .featured__body { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--space-7); min-height: 560px; align-content: start; }
   .featured__body > * { grid-column: 1; }
-  .featured__body > .gallery {
-    grid-column: 2; grid-row: 1 / span 8; align-self: center; overflow: visible; justify-content: center;
-    scroll-snap-type: none; padding: 24px 0;
-  }
-  .gallery__phone { flex: 0 0 auto; width: 220px; max-width: none; animation: float 5s ease-in-out infinite; animation-delay: var(--float-delay); margin-inline: -18px; }
+  .featured__body > .gallery-wrap { grid-column: 2; grid-row: 1 / span 8; align-self: center; }
+  .gallery { overflow: visible; justify-content: center; scroll-snap-type: none; padding: 24px 0; }
+  .gallery__dots, .gallery-wrap .sr-only { display: none; }
+  .gallery__phone { flex: 0 0 auto; width: 220px; animation: float 5s ease-in-out infinite; animation-delay: var(--float-delay); margin-inline: -18px; }
   .gallery__phone--0 { transform-origin: bottom center; }
   .gallery__phone--1 { z-index: 2; width: 240px; }
   .featured__btn { margin-top: var(--space-2); }
 }
+@media (min-width: 1024px) and (max-width: 1199.98px) {
+  .gallery__phone { width: 168px; margin-inline: -14px; }
+  .gallery__phone--1 { width: 184px; }
+}
 @keyframes float { 50% { translate: 0 -8px; } }
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover .cover-svg { transform: scale(1.05); }
+  .featured__card.tilt-card:hover { box-shadow: var(--glow-violet); }
+}
+@media (hover: none), (max-width: 767.98px) {
+  .projects__wash { filter: none; will-change: auto; animation: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   .gallery__phone, .mathi__moon { animation: none !important; }
+  .gallery__dots span { transition: none; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
   .project-card:hover .cover-svg { transform: none; }
 }
 @media (max-width: 480px) {
   .featured__header h3 { font-size: 1.75rem; }
+}
+@media (max-width: 360px) {
+  .featured__icon { width: 56px; height: 56px; border-radius: 14px; }
 }

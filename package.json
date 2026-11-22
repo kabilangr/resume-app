@@ -24,6 +24,7 @@
     "build": "react-scripts build",
     "postbuild": "cp build/index.html build/404.html",
     "test": "react-scripts test",
+    "test:responsive": "node scripts/check-responsive.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

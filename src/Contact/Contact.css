@@ -2,7 +2,7 @@
 .contact__panel {
   position: relative; overflow: hidden; max-width: 960px; margin-inline: auto; text-align: center;
   display: grid; gap: var(--space-5); justify-items: center;
-  padding: clamp(28px, 5vw, 72px); border-radius: var(--radius-xl);
+  padding: var(--panel-pad); border-radius: var(--radius-xl);
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
   background-image: var(--blob-a), var(--blob-b);
@@ -13,7 +13,7 @@
 .contact__panel > * { position: relative; max-width: 100%; }
 .contact__glyph {
   position: absolute !important; right: 4%; top: -10%; font-family: var(--font-display); font-weight: var(--fw-bold);
-  font-size: 240px; line-height: 1; opacity: 0.06; white-space: nowrap; pointer-events: none; color: var(--color-text);
+  font-size: clamp(5rem, 4rem + 12vw, 12rem); line-height: 1; opacity: 0.06; white-space: nowrap; pointer-events: none; color: var(--color-text);
 }
 .contact__panel h2 { font-size: var(--fs-h2); }
 .contact__panel .lead { max-width: 56ch; }

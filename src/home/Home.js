@@ -1,27 +1,31 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import Typewriter from 'typewriter-effect';
 import { profile, stats } from '../data/portfolio';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { useInViewPause } from '../hooks/useInViewPause';
 import { SocialLinks } from '../components/SocialLinks';
 import { ResumeButton } from '../components/ResumeButton';
 import { RevealPortrait } from './RevealPortrait';
 import './Home.css';
 
-const MARQUEE = 'build · ship · tinker · orchestrate · ';
+const MARQUEE = 'build · ship · architect · orchestrate · ';
 
 const EASE = [0.16, 1, 0.3, 1];
 
 const parent = { hidden: {}, visible: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } } };
 const child = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } } };
+// y only, and opacity stays 1: the LCP image paints at once instead of fading in.
 const photo = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 1, ease: EASE, delay: 0.25 } },
+  hidden: { y: 40 },
+  visible: { y: 0, transition: { duration: 1, ease: EASE, delay: 0.25 } },
 };
 const word = (delay) => ({
   hidden: { y: '110%' },
   visible: { y: 0, transition: { duration: 0.9, ease: EASE, delay } },
 });
+
+const longestRole = profile.roles.reduce((a, b) => (b.length > a.length ? b : a), '');
 
 function RoleLine({ reduced }) {
   const staticText = profile.roles.join(' · ');
@@ -35,9 +39,12 @@ function RoleLine({ reduced }) {
   return (
     <div className="hero__roles">
       <span className="sr-only">{staticText}</span>
+      {/* Invisible copy of the longest role: on phones it fixes the width of the centred box, so the
+          typed text grows from a fixed left edge and nothing moves (no layout shift). */}
+      <span className="hero__roles-sizer" aria-hidden="true">{longestRole}</span>
       <span className="hero__typed" aria-hidden="true">
         <Typewriter
-          options={{ strings: profile.roles, autoStart: true, loop: true, delay: 45, deleteSpeed: 25, pauseFor: 1800 }}
+          options={{ strings: profile.roles, autoStart: true, loop: true, cursor: '', delay: 45, deleteSpeed: 25, pauseFor: 1800 }}
         />
       </span>
     </div>
@@ -46,11 +53,13 @@ function RoleLine({ reduced }) {
 
 const Home = () => {
   const reduced = usePrefersReducedMotion();
+  const heroRef = useRef(null);
+  useInViewPause(heroRef);
   const initial = reduced ? false : 'hidden';
   const [first, last] = profile.name.split(' ');
 
   return (
-    <section id="hero" className="hero" aria-labelledby="hero-title" tabIndex={-1}>
+    <section ref={heroRef} id="hero" className="hero" aria-labelledby="hero-title" tabIndex={-1}>
       <div className="hero__bg" aria-hidden="true">
         <span className="hero__blob hero__blob--a" />
         <span className="hero__blob hero__blob--b" />
