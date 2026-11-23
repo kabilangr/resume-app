@@ -8,9 +8,9 @@ import { TiltCard } from '../components/motion/TiltCard';
 import { categoryIcons, ExternalIcon, LockIcon, MoonIcon } from '../components/icons';
 
 const fanOpen = [
-  { rotate: -8, x: -6 },
+  { rotate: -5, x: -6 },
   { rotate: 0, x: 0 },
-  { rotate: 8, x: 6 },
+  { rotate: 5, x: 6 },
 ];
 const fanFlat = [
   { rotate: 0, x: 0 },
@@ -18,9 +18,9 @@ const fanFlat = [
   { rotate: 0, x: 0 },
 ];
 const fanRest = [
-  { rotate: -4, x: 0 },
   { rotate: 0, x: 0 },
-  { rotate: 4, x: 0 },
+  { rotate: 0, x: 0 },
+  { rotate: 0, x: 0 },
 ];
 
 function MathiPanel() {
