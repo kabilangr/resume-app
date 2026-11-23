@@ -75,10 +75,10 @@
 .gallery__dots span.is-active { width: 20px; background: var(--color-accent); }
 .gallery__phone {
   flex: 0 0 min(68%, 260px); margin: 0; scroll-snap-align: center;
-  border: 6px solid var(--phone-bezel); border-radius: 28px; overflow: hidden; box-shadow: var(--shadow-lg);
-  aspect-ratio: 9 / 19.5; background: var(--phone-bezel);
+  box-sizing: border-box; padding: 10px; border-radius: 36px; box-shadow: var(--shadow-lg);
+  aspect-ratio: 414 / 900; background: var(--phone-bezel);
 }
-.gallery__phone img { width: 100%; height: 100%; object-fit: cover; }
+.gallery__phone img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 26px; }
 
 @media (min-width: 768px) {
   .featured__features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -93,13 +93,13 @@
   .featured__body > .gallery-wrap { grid-column: 2; grid-row: 1 / span 8; align-self: center; }
   .gallery { overflow: visible; justify-content: center; scroll-snap-type: none; padding: 24px 0; }
   .gallery__dots, .gallery-wrap .sr-only { display: none; }
-  .gallery__phone { flex: 0 0 auto; width: 220px; animation: float 5s ease-in-out infinite; animation-delay: var(--float-delay); margin-inline: -18px; }
+  .gallery__phone { flex: 0 0 auto; width: 220px; animation: float 5s ease-in-out infinite; animation-delay: var(--float-delay); margin-inline: -4px; }
   .gallery__phone--0 { transform-origin: bottom center; }
   .gallery__phone--1 { z-index: 2; width: 240px; }
   .featured__btn { margin-top: var(--space-2); }
 }
 @media (min-width: 1024px) and (max-width: 1199.98px) {
-  .gallery__phone { width: 168px; margin-inline: -14px; }
+  .gallery__phone { width: 168px; margin-inline: -4px; }
   .gallery__phone--1 { width: 184px; }
 }
 @keyframes float { 50% { translate: 0 -8px; } }
