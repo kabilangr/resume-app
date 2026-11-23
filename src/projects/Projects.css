@@ -75,7 +75,11 @@
 .gallery__dots span.is-active { width: 20px; background: var(--color-accent); }
 .gallery__phone {
   flex: 0 0 min(68%, 260px); margin: 0; scroll-snap-align: center;
-  box-sizing: border-box; padding: 7px; border-radius: 32px; box-shadow: var(--shadow-lg); background: var(--phone-bezel);
+  position: relative; box-sizing: border-box; padding: 7px; border-radius: 32px; box-shadow: var(--shadow-lg); background: var(--phone-bezel);
+}
+.gallery__phone::before {
+  content: ''; position: absolute; z-index: 1; top: 16px; left: 50%; translate: -50% 0; width: 30%; height: 16px;
+  border-radius: 999px; background: #000; pointer-events: none;
 }
 .gallery__phone img { display: block; width: 100%; height: auto; aspect-ratio: 414 / 900; object-fit: contain; border-radius: 25px; }
 
@@ -90,16 +94,15 @@
   .featured__body { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--space-7); min-height: 560px; align-content: start; }
   .featured__body > * { grid-column: 1; }
   .featured__body > .gallery-wrap { grid-column: 2; grid-row: 1 / span 8; align-self: center; }
-  .gallery { overflow: visible; justify-content: center; scroll-snap-type: none; padding: 24px 0; }
+  .gallery { align-items: flex-start; overflow: visible; justify-content: center; scroll-snap-type: none; padding: 24px 0; }
   .gallery__dots, .gallery-wrap .sr-only { display: none; }
-  .gallery__phone { flex: 0 0 auto; width: 190px; animation: float 5s ease-in-out infinite; animation-delay: var(--float-delay); margin-inline: 4px; }
+  .gallery__phone { flex: 0 0 auto; width: 200px; animation: float 5s ease-in-out infinite; animation-delay: var(--float-delay); margin-inline: 4px; }
   .gallery__phone--0 { transform-origin: bottom center; }
-  .gallery__phone--1 { z-index: 2; width: 206px; }
+  
   .featured__btn { margin-top: var(--space-2); }
 }
 @media (min-width: 1024px) and (max-width: 1199.98px) {
-  .gallery__phone { width: 150px; margin-inline: -2px; }
-  .gallery__phone--1 { width: 164px; }
+  .gallery__phone { width: 160px; margin-inline: 4px; }
 }
 @keyframes float { 50% { translate: 0 -8px; } }
 @media (hover: hover) and (pointer: fine) {
