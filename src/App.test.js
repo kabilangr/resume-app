@@ -485,7 +485,7 @@ describe('contact, privacy and socials', () => {
       expect(a).toHaveAttribute('rel', 'noopener noreferrer');
     });
     li.forEach((a) => {
-      expect(a).toHaveAttribute('href', 'https://www.linkedin.com/in/kabilan-g-r-9749631b5/');
+      expect(a).toHaveAttribute('href', 'https://www.linkedin.com/in/kabilan-gr-9749631b5/');
       expect(a).toHaveAttribute('target', '_blank');
       expect(a).toHaveAttribute('rel', 'noopener noreferrer');
     });
