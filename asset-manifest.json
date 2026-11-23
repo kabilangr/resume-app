@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.a1e2651f.css",
-    "main.js": "/static/js/main.3b8ae52d.js",
+    "main.js": "/static/js/main.c3a1bc60.js",
     "static/js/787.ec610b0e.chunk.js": "/static/js/787.ec610b0e.chunk.js",
     "static/media/kabilan-portrait.jpg": "/static/media/kabilan-portrait.863170ecc5ac7f3ed3c9.jpg",
     "static/media/coach.jpg": "/static/media/coach.4880390a4a510bc3987a.jpg",
@@ -10,11 +10,11 @@
     "static/media/valam-icon.png": "/static/media/valam-icon.ba08ccb81ffc2d239434.png",
     "index.html": "/index.html",
     "main.a1e2651f.css.map": "/static/css/main.a1e2651f.css.map",
-    "main.3b8ae52d.js.map": "/static/js/main.3b8ae52d.js.map",
+    "main.c3a1bc60.js.map": "/static/js/main.c3a1bc60.js.map",
     "787.ec610b0e.chunk.js.map": "/static/js/787.ec610b0e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a1e2651f.css",
-    "static/js/main.3b8ae52d.js"
+    "static/js/main.c3a1bc60.js"
   ]
 }
