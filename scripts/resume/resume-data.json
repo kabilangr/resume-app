@@ -1,0 +1,69 @@
+{
+  "_note": "Mirrors the older roles of the original resume (kept verbatim). Everything else (summary, Xpulsar, skills, projects, links) is read from src/data/portfolio.js by build-resume.js.",
+  "title": "Lead Full-Stack Developer",
+  "olderJobs": [
+    {
+      "company": "Fountain Hills Technologies",
+      "location": "Coimbatore, India",
+      "role": "Lead Full Stack developer",
+      "dates": "04/2024 – 09/2025",
+      "description": "A tech company with multiple project for management",
+      "bullets": [
+        "Successfully led the development of a work allocation tool with issue reporting and integrated course and quiz creation features.",
+        "Developed a quote management system and a commerce platform leveraging React.js and Node.js.",
+        "Designed and implemented a dynamic company website using Next.js and NestJs with AI ChatBot.",
+        "Managed cloud infrastructure on Azure on all projects.",
+        "Oversaw project planning, made critical technical decisions, and mentored team members to maintain high-quality deliverables."
+      ]
+    },
+    {
+      "company": "Zoho Corporation.",
+      "location": "Chennai, Tamil Nadu, India",
+      "role": "Member Technical Staff (Android & Web).",
+      "dates": "02/2022 – 08/2023",
+      "description": "A leading software company specializing in cloud-based applications.",
+      "bullets": [
+        "Analyzed requirements and implemented functionalities for Android, iOS, web, and desktop platforms.",
+        "Utilized Zoho tools for APK generation, GitLab issue completion, and feature integration.",
+        "Mentored new team members and maintained work quality standards."
+      ]
+    },
+    {
+      "company": "AltraDimension Technologies.",
+      "location": "Bangalore, Karnataka, India",
+      "role": "Software Developer (Front-End).",
+      "dates": "04/2021 – 02/2022",
+      "description": "A tech company focused on developing robust software solutions.",
+      "bullets": [
+        "Analyzed requirements and ensured a seamless user experience for the Wasfat app.",
+        "Performed coding, design, and documentation tasks.",
+        "Attended daily stand-up meetings and reported progress on ClickUp and Jira.",
+        "Trained new Joiners and mentored juniors in React and React Native."
+      ]
+    },
+    {
+      "company": "SoftSuave Technologies.",
+      "location": "Chennai, Tamil Nadu, India",
+      "role": "Software Engineer",
+      "dates": "01/2020 - 01/2021",
+      "description": "A technology solutions provider specializing in web and mobile applications.",
+      "bullets": [
+        "Participated in daily stand-up meetings and implemented functionalities for Sotheby's CRM project.",
+        "Developed Freshworks CRM custom modules independently.",
+        "Completed ClickUp and Jira assignments and resolved issues promptly."
+      ]
+    }
+  ],
+  "education": {
+    "institution": "Prince Shri Venkateshwara Padmavathy Engineering College",
+    "degree": "Bachelor of Engineering",
+    "location": "Chennai, Tamil Nadu, India",
+    "dates": "08/2016 - 05/2020"
+  },
+  "languages": [
+    { "name": "English", "level": "Native", "dots": 5 },
+    { "name": "Tamil", "level": "Native", "dots": 5 }
+  ],
+  "skillsExtra": { "vibe": ["AI Models", "AI Prompting"] },
+  "skillsBefore": { "Spring Boot": ["Java"] }
+}

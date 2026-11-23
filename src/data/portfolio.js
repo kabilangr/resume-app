@@ -11,7 +11,6 @@ export const profile = {
   company: 'Xpulsar',
   location: 'Chennai, Tamil Nadu, India',
   shortLocation: 'Chennai, India',
-  resumePath: '/Kabilan_GR_Resume.pdf',
   roles: [
     'Lead Full-Stack Developer',
     'Software Architect',

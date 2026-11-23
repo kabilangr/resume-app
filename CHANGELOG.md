@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Removed
+- The "Download résumé" buttons in the Hero and Contact sections, the `ResumeButton` component and `profile.resumePath`.
+  The PDF generator now writes to `scripts/resume/out/` (git-ignored) so a deploy can never publish the file.
+
 ## [Mobile responsive v3] - 2026-11-22
 
 Release for the next deploy to https://www.kabilan.me. The site now works on phones from 320px, on tablets and on

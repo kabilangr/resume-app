@@ -60,3 +60,6 @@ graphify-out/
 
 # per-task parallel build output (site-coder / site-tester)
 .build-tmp/
+
+# generated resume PDF (kept out of public/ so it is never deployed)
+scripts/resume/out/

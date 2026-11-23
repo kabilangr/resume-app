@@ -496,14 +496,16 @@ describe('contact, privacy and socials', () => {
     });
   });
 
-  test('resume download links', () => {
-    renderApp();
-    const links = screen.getAllByRole('link', { name: /Download résumé/i });
-    expect(links.length).toBeGreaterThanOrEqual(2);
-    links.forEach((a) => {
-      expect(a.getAttribute('href').endsWith('/Kabilan_GR_Resume.pdf')).toBe(true);
-      expect(a).toHaveAttribute('download');
-    });
+  test('no download link is rendered', () => {
+    const { container } = renderApp();
+    const word = ['res', 'ume'].join('');
+    const accent = ['r', '\u00e9', 'sum', '\u00e9'].join('');
+    const text = container.textContent.toLowerCase();
+    expect(text).not.toContain(`download ${word}`);
+    expect(text).not.toContain(`download ${accent}`);
+    expect(container.querySelector('[download]')).toBeNull();
+    expect(container.querySelector('a[href$=".pdf"]')).toBeNull();
+    expect(container.innerHTML.toLowerCase()).not.toContain(`kabilan_gr_${word}`);
   });
 });
 

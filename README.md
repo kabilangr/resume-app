@@ -14,12 +14,12 @@ One scrolling page at `/` with six anchored sections, shown in this order:
 
 | Section | Anchor | What it shows |
 |---|---|---|
-| Hero | `#hero` | The name (the page's only `<h1>`), a typewriter rotator with eight roles (see "Roles and summary"), the current role at Xpulsar, a "6+ years" stat, CTAs (View Projects, Contact Me, Download résumé), and the reveal card: the Pixar-style cartoon, with the robot revealed by the pointer or by touch. A marquee ("build · ship · architect · orchestrate") and bokeh dots sit behind it. Text and card sit side by side from 768px and stack below it |
+| Hero | `#hero` | The name (the page's only `<h1>`), a typewriter rotator with eight roles (see "Roles and summary"), the current role at Xpulsar, a "6+ years" stat, CTAs (View Projects, Contact Me), and the reveal card: the Pixar-style cartoon, with the robot revealed by the pointer or by touch. A marquee ("build · ship · architect · orchestrate") and bokeh dots sit behind it. Text and card sit side by side from 768px and stack below it |
 | About | `#about` | Summary, location, count-up stat cards (6+ years, 5 companies, platforms), education, and an interactive Languages card (English / Tamil toggles with a greeting and a native-speaker meter) |
 | Skills | `#skills` | Eight skill categories with filter chips and tilt cards. Six core-stack proficiency rings, each with an icon (React, Node.js, TypeScript, Flutter, AI agents, chip). Levels are self-assessed |
 | Experience | `#experience` | Vertical timeline of five roles, newest first, with a scroll-drawn line. Only the Xpulsar role is marked "Present" |
 | Projects | `#projects` | Featured Valam card (Flutter finance app with the Mathi AI coach), then six projects with category filters. On phones the Valam screenshots scroll sideways, with dots that show the position |
-| Contact | `#contact` | A "Message me on LinkedIn" button, location, résumé download, GitHub and LinkedIn. The site publishes no email address and no phone number |
+| Contact | `#contact` | A "Message me on LinkedIn" button, location, GitHub and LinkedIn. The site publishes no email address and no phone number |
 
 A sticky navigation bar links to the six sections with a scroll-spy highlight, and has a theme toggle. Below 1024px
 the links are replaced by a full-screen menu (see "Mobile menu"). A footer with the logo and a back-to-top button ends
@@ -225,7 +225,6 @@ bottom-right corner out of it. Use the same box if you make a new crop from a di
 | `/` | The full portfolio page |
 | `/home`, `/languages`, `/workExperience`, `/projects`, `/about`, `/contact` | Legacy URLs. Each redirects to `/` and scrolls to the matching section (`#hero`, `#skills`, `#experience`, `#projects`, `#about`, `#contact`) |
 | any other path | Redirects to `/` |
-| `/Kabilan_GR_Resume.pdf` | Static résumé file in `public/` (you supply it, see "Before you deploy") |
 
 **Deep links.** The `postbuild` script copies `build/index.html` to `build/404.html` after every build. GitHub Pages
 serves `404.html` for paths it does not have, so a direct load of `/home` or `/about` loads the app, and the router
@@ -302,6 +301,7 @@ Example: `npm run test:responsive -- --vp=360,844x390 --skip-cls`.
 These are run directly from the repository root:
 
 - `node scripts/check-contrast.js`: checks the theme contrast. Exit code 0 means every check passed.
+- `node scripts/resume/build-resume.js [outfile]`: optional. Generates a PDF with headless Chrome (set `CHROME` if Chrome is not at the macOS default path) from `src/data/portfolio.js` and `scripts/resume/resume-data.json`. It writes to `scripts/resume/out/Kabilan_GR_Resume.pdf`, which is git-ignored. The site no longer offers a download, and the PDF is kept out of `public/` so a deploy can never publish it.
 - The ExFAT cleanup (macOS shell command). See the ExFAT note below.
 
 ### ExFAT note (macOS, external drives)
@@ -340,9 +340,6 @@ The site uses the domain root, so `PUBLIC_URL` is empty and the router and asset
 
 ## Before you deploy
 
-- [ ] **Add the résumé PDF.** Place the résumé at `public/Kabilan_GR_Resume.pdf`. It is linked from the Hero and
-      Contact sections (`profile.resumePath`). The project does not generate or commit the file. The PDF must have
-      **no phone number and no email address**, because the site shows neither and the résumé should match.
 - [ ] **Run a manual browser check.** Automated tests do not cover everything. Check these in a browser:
   - **Dark mode:** switch to Brick dusk. The hero card fades into the page with no hard edge, and the text stays
     readable. Reload the page to confirm that the choice persists.
@@ -385,11 +382,11 @@ resume-app/
 │   ├── apple-touch-icon.png             # (changed) 180×180 opaque icon for iOS
 │   ├── og-kabilan-gr-cafe.jpg           # (new) 1200×630 share image, cropped from the cartoon
 │   ├── sitemap.xml                      # (new) One URL with lastmod
-│   ├── robots.txt                       # (changed) Allow all, plus the Sitemap line
-│   └── Kabilan_GR_Resume.pdf            # You add this file (not in the repo)
+│   └── robots.txt                       # (changed) Allow all, plus the Sitemap line
 ├── scripts/
 │   ├── check-contrast.js                # WCAG contrast check; reads the tokens in src/index.css
-│   └── check-responsive.js              # (new, v3) Headless Chrome responsive check (npm run test:responsive)
+│   ├── check-responsive.js              # (new, v3) Headless Chrome responsive check (npm run test:responsive)
+│   └── resume/                          # Optional PDF generator (build-resume.js, resume-data.json); output in out/ (git-ignored)
 ├── src/
 │   ├── index.js / App.js                # Entry point; App.js holds the router and the single-page layout
 │   ├── App.css / index.css              # (changed) Global styles; index.css holds the Golden Hour Café tokens,
@@ -413,7 +410,6 @@ resume-app/
 │   │   ├── motion/                      # Reveal (scroll reveal) and TiltCard (hover tilt, gated in v3)
 │   │   ├── Footer.js / .css             # (changed) Footer with logo, back-to-top and safe-area padding
 │   │   ├── FilterChips.js               # Chip filter used by Skills and Projects (44px chips in v3)
-│   │   ├── ResumeButton.js              # Download résumé link (uses profile.resumePath)
 │   │   ├── SectionHeading.js / .css     # Eyebrow, h2 and lead for each section
 │   │   └── SocialLinks.js / .css        # GitHub and LinkedIn icon links
 │   ├── navigation/                      # Sticky nav, scroll spy, theme toggle, mobile menu
@@ -447,7 +443,7 @@ Almost all text, links and data live in **`src/data/portfolio.js`**. Components 
 
 | Export | Used for |
 |---|---|
-| `profile` | Name, role, company, location, résumé path (`resumePath`), typewriter `roles` (eight roles), `summary` and `summaryMore`, `portraitAlt` (alt text of the hero card), `portrait` (`{ cartoon, robot, cartoonSrcSet, robotSet, sizes }`, the hero image URLs and srcset), `contactLead` (the Contact intro) and `heroStat` (the text beside "6+") |
+| `profile` | Name, role, company, location, typewriter `roles` (eight roles), `summary` and `summaryMore`, `portraitAlt` (alt text of the hero card), `portrait` (`{ cartoon, robot, cartoonSrcSet, robotSet, sizes }`, the hero image URLs and srcset), `contactLead` (the Contact intro) and `heroStat` (the text beside "6+") |
 | `stats` | Stat cards and the hero stat (`years: '6+'`, companies, platforms) |
 | `socials` | GitHub and LinkedIn links (the only socials on the site) |
 | `coreStack` | Six proficiency rings in Skills, each with an `icon` key (`react`, `node`, `ts`, `flutter`, `agents`, `chip`). The levels are **self-assessed** working proficiency, not a measured metric |
@@ -498,7 +494,7 @@ Other places to know about:
 - The pause-animations toggle (WCAG 2.2.2) is out of scope for now. See "Touch and hover".
 - Tests: 60 tests in two suites. `src/App.test.js` (44 tests) covers the sections and their order, navigation and the
   mobile menu, the theme default and toggle, the logo and favicon links, skills, experience, projects and filters, the
-  LinkedIn contact link, the absence of email and phone, the résumé links, the JSON-LD block, the sitemap and robots
+  LinkedIn contact link, the absence of email and phone, the absence of any download link, the JSON-LD block, the sitemap and robots
   files, the Languages card, the hero bokeh layer, the roles and marquee copy, reduced motion and the hover gating.
   `src/home/RevealPortrait.test.js` (16 tests) covers the reveal card: the lazy robot, the touch hint and tap to peek,
   the hero image srcset and preload, and Save-Data.

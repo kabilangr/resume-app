@@ -5,7 +5,6 @@ import { profile, stats } from '../data/portfolio';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { useInViewPause } from '../hooks/useInViewPause';
 import { SocialLinks } from '../components/SocialLinks';
-import { ResumeButton } from '../components/ResumeButton';
 import { RevealPortrait } from './RevealPortrait';
 import './Home.css';
 
@@ -99,7 +98,6 @@ const Home = () => {
           <motion.div variants={child} className="hero__cta">
             <a className="btn btn--primary" href="#projects">View Projects</a>
             <a className="btn btn--ghost" href="#contact">Contact Me</a>
-            <ResumeButton variant="ghost" />
           </motion.div>
           <motion.div variants={child} className="hero__social">
             <SocialLinks />
