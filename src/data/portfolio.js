@@ -57,7 +57,7 @@ export const socials = [
   {
     id: 'linkedin',
     label: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/kabilan-g-r-9749631b5/',
+    href: 'https://www.linkedin.com/in/kabilan-gr-9749631b5/',
   },
 ];
 
