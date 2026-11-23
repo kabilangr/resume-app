@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/static/css/main.7296c610.css",
+    "main.css": "/static/css/main.81c42753.css",
     "main.js": "/static/js/main.83077b0f.js",
     "static/js/787.ec610b0e.chunk.js": "/static/js/787.ec610b0e.chunk.js",
     "static/media/kabilan-portrait.jpg": "/static/media/kabilan-portrait.863170ecc5ac7f3ed3c9.jpg",
@@ -9,12 +9,12 @@
     "static/media/wealth.jpg": "/static/media/wealth.4a0af90d8685040eb6f0.jpg",
     "static/media/valam-icon.png": "/static/media/valam-icon.ba08ccb81ffc2d239434.png",
     "index.html": "/index.html",
-    "main.7296c610.css.map": "/static/css/main.7296c610.css.map",
+    "main.81c42753.css.map": "/static/css/main.81c42753.css.map",
     "main.83077b0f.js.map": "/static/js/main.83077b0f.js.map",
     "787.ec610b0e.chunk.js.map": "/static/js/787.ec610b0e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7296c610.css",
+    "static/css/main.81c42753.css",
     "static/js/main.83077b0f.js"
   ]
 }
